@@ -80,6 +80,13 @@ public class MyGameGUI implements ActionListener {
 	    f.setLocationRelativeTo(null); // open the window in the middle
 	    f.setVisible(true);
 	    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    
+	    
+	    // FOR DEVELOPMENT PURPOSES ONLY
+	    
+	    _file.setLocation("C:\\Users\\Yoni\\git\\oop_game_2\\data\\A0");
+	    _file.processFile();
+	    
 	}
 	
 	
@@ -92,7 +99,7 @@ public class MyGameGUI implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
         String s = e.getActionCommand(); 
         
-        if (s.equals("Load map...")) {_file.loadFile();}
+        if (s.equals("Load map...")) {_file.loadFile(); _file.processFile();}
         
         System.out.println(s + " selected");
 	}
