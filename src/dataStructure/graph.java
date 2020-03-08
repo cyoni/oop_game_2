@@ -1,5 +1,8 @@
 package dataStructure;
 import java.util.Collection;
+import java.util.List;
+
+import items.Fruit;
 /**
  * This interface represents a directional weighted graph.
  * The interface has a road-system or communication network in mind - and should support a large number of nodes (over 100,000).
@@ -51,6 +54,13 @@ public interface graph {
 	 * @return Collection<edge_data>
 	 */
 	public Collection<edge_data> getE(int node_id);
+	
+	/**
+	 *  This method returns an array of vertices with a list of its edges.
+	 * @return list of edges
+	 */
+	
+	public List<edge_data>[] getArrayOfVertciesWithEdges();
 	/**
 	 * Delete the node (with the given ID) from the graph -
 	 * and removes all edges which starts or ends at this node.
@@ -78,9 +88,13 @@ public interface graph {
 	 * @return
 	 */
 	public int edgeSize();
+	
+	
 /**
  * return the Mode Count - for testing changes in the graph.
  * @return
  */
 	public int getMC();
+	
+	
 }

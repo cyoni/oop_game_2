@@ -110,4 +110,18 @@ public class DGraph implements graph, Serializable {
 		return -100;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<edge_data>[] getArrayOfVertciesWithEdges() {
+		List<edge_data>[] array_graph = new ArrayList[this.g.size()];
+    	for (int i = 0; i < array_graph.length; i++) {
+    		array_graph[i] = new ArrayList<>();
+		}
+    	
+    	for (int i = 0; i < array_graph.length; i++) {
+    		array_graph[i].addAll(this.getE(i));
+		}
+		return array_graph;
+	}
+
 }

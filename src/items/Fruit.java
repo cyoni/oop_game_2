@@ -1,25 +1,29 @@
 package items;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import Server.Game_Server;
-import Server.game_service;
-import oop_dataStructure.OOP_DGraph;
-import oop_dataStructure.oop_edge_data;
-import oop_dataStructure.oop_graph;
+import utils.Point3D;
 /**
- * This class represents a 
+ * This class represents a fruit
  *
  *@author Yoni
  */
 
 
 public class Fruit {
+	private double value;
+	private int type;
+	private Point3D pos;
+	private double z;
+	
+	public Fruit(double value, int type, Point3D p) {
+		this.value = value;
+		this.type = type;
+		this.pos = p;
+		}
+	
+	public Point3D getPos() {
+		return pos;
+	}
 	
 	
 	

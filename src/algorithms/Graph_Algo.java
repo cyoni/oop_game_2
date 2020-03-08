@@ -29,7 +29,7 @@ import utils.Point3D;
  */
 public class Graph_Algo implements graph_algorithms , Serializable{
 
-	
+	private file _file;
 	/**
 	 * 
 	 */
@@ -37,7 +37,6 @@ public class Graph_Algo implements graph_algorithms , Serializable{
 	
 	
 	private static graph g;
-	private String file_name; //TODO
 	private FW fw;
 	
 	@Override
@@ -48,29 +47,13 @@ public class Graph_Algo implements graph_algorithms , Serializable{
 
 	@Override
 	public void init(String file_name) {
-		this.file_name = file_name;
+		_file.setLocation(file_name);
+		_file.processFile();
 	}
 
 	@Override
 	public void save(String file_name) {
-		
-	       String filename = file_name + ".ser";
-	 
-	        // save the object to file
-	        FileOutputStream fos = null;
-	        ObjectOutputStream out = null;
-	        try {
-	            fos = new FileOutputStream(filename);
-	            out = new ObjectOutputStream(fos);
-	            out.writeObject(g);
-
-	            out.close();
-	        } catch (Exception ex) {
-	        	System.out.println("error.");
-	            ex.printStackTrace();
-	        }
-	        System.out.println("done");
-		
+		_file.saveFile(file_name);
 	}
 
 	@Override

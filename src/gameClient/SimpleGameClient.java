@@ -33,7 +33,7 @@ public class SimpleGameClient {
 	public static void main(String[] a) {
 		test1();}
 	public static void test1() {
-		int scenario_num = 2;
+		int scenario_num = 20;
 		game_service game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String g = game.getGraph();
 		OOP_DGraph gg = new OOP_DGraph();
@@ -86,6 +86,7 @@ public class SimpleGameClient {
 					if(dest==-1) {	
 						dest = nextNode(gg, src);
 						game.chooseNextEdge(rid, dest);
+						
 						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
 						System.out.println(ttt);
 					}
@@ -101,7 +102,7 @@ public class SimpleGameClient {
 	 * @return
 	 */
 	private static int nextNode(oop_graph g, int src) {
-		int ans = -1;
+		int ans = -1; 
 		Collection<oop_edge_data> ee = g.getE(src);
 		Iterator<oop_edge_data> itr = ee.iterator();
 		int s = ee.size();

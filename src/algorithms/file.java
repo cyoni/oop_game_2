@@ -1,9 +1,12 @@
 package algorithms;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -12,16 +15,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import dataStructure.DGraph;
+import dataStructure.Node_metadata;
+import dataStructure.edge_data;
+import dataStructure.edge_metadata;
+import dataStructure.game_metadata;
+import dataStructure.graph;
+import dataStructure.node_data;
+import utils.Point3D;
 
 
-/**
- * 
+
+	/**
 	* This class loads/process/saves files
-	*@author Yoni
+	* @author Yoni
 	*/
 
-	public class file implements file_interface{
-
+public class file implements file_interface{
 	private JFrame f;
 	private String file_location;
 
@@ -47,9 +57,13 @@ import org.json.JSONObject;
 		
 
 	@Override
-	public void processFile() {
-	if (getFilePath().isEmpty()) return;
+	public graph processFile() {
+	if (getFilePath().isEmpty()) return null;
 		
+	//game_metadata gmt = new game_metadata();
+	List<edge_data> Edges = new ArrayList<>();
+	List<node_data> Nodes = new ArrayList<>();
+	
 	String data = "";
 	try {
 		data = new String(Files.readAllBytes(Paths.get(getFilePath())));
@@ -66,26 +80,62 @@ import org.json.JSONObject;
 				{
 					int src = arr.getJSONObject(i).getInt(("src"));
 					double w = arr.getJSONObject(i).getDouble(("w"));
-					int dest = arr.getJSONObject(i).getInt(("dest"));	 
+					int dest = arr.getJSONObject(i).getInt(("dest"));
+					
+					Edges.add(new edge_metadata(src, dest, w));
 				}
 			arr = obj.getJSONArray("Nodes"); // get data of Nodes
 			for (int i = 0; i < arr.length(); i++) // get data of Edges
 			{
 				String pos = arr.getJSONObject(i).getString(("pos"));
 				int id = arr.getJSONObject(i).getInt(("id"));	
+				
+				String point[] = pos.split(",");
+				double x = Double.parseDouble(point[0]);
+				double y = Double.parseDouble(point[1]);
+				double z = Double.parseDouble(point[2]);
+				
 
+				Nodes.add(new Node_metadata(id, new converter(f).coordsToPixel(y, x), z));
 			}
 		}
 		
 		 catch (JSONException e) {
 				e.printStackTrace();
 			}
+	
+			graph g = new DGraph();
+			
+			for (int i = 0; i < Nodes.size(); i++) {
+				g.addNode(Nodes.get(i));
+			}
+			for (int i = 0; i < Edges.size(); i++) {
+				g.connect(Edges.get(i).getSrc(), Edges.get(i).getDest(), Edges.get(i).getWeight());
+			}
+	
+	//	return new game_metadata(Edges, Nodes, null);
+			return g;
 	}
 
 	@Override
-	public void saveFile() {
+	public void saveFile(String f) {
 
-			
+	       String filename = f + ".ser";
+	  	 
+	        // save the object to file
+	        FileOutputStream fos = null;
+	        ObjectOutputStream out = null;
+	        try {
+	            fos = new FileOutputStream(filename);
+	            out = new ObjectOutputStream(fos);
+	            out.writeObject(null ); // TODO
+
+	            out.close();
+	        } catch (Exception ex) {
+	        	System.out.println("error.");
+	            ex.printStackTrace();
+	        }
+	        System.out.println("done");
 	}
 
 		@Override
@@ -98,8 +148,6 @@ import org.json.JSONObject;
 	return file_location;
 	}
 
+
 		
-		
-		
-		
-	}
+}
