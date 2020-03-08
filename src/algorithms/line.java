@@ -18,7 +18,6 @@ public class line {
 		double distance = Math.sqrt(Math.pow((x2-x1), 2) + Math.pow(y2-y1, 2));
 		double x = x1 + u[0] * distance*(percent/100); 
 		double y = y1 + u[1] * distance*(percent/100);
-		
 		return new double[]{x,y};
 	}
 	
