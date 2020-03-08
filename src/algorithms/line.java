@@ -33,6 +33,8 @@ public class line {
 	
 	public static boolean isIn(Point3D p1, Point3D p2,  Point3D point_to_check) {
 		double degree = (p2.y()-p1.y())/(p2.x()-p1.x());
-		return (Math.ceil(Math.ceil(degree*point_to_check.x()+(-1)*degree*p2.x()+ p2.y()))) == point_to_check.y();
+		int expected = (int) point_to_check.y();
+		int result = (int) (degree*point_to_check.x()+(-1)*degree*p2.x()+ p2.y());
+		return expected-result < 10 && expected-result >= -2;	
 	}	
 }
