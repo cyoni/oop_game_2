@@ -93,11 +93,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	
 	file _file;
 	public JFrame f;
-	
-	
-	///
-	
-	
+	Game_board gb;
 	
 
 	/**
@@ -320,6 +316,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
 		// frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
 		frame.setTitle("Standard Draw");
+		frame.addMouseListener(this);
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.requestFocusInWindow();
@@ -460,7 +457,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 * pen radius and draw a point, you get a circle of the specified radius.
 	 * The pen radius is not affected by coordinate scaling.
 	 */
-	public static void setPenRadius() {
+	public void setPenRadius() {
 		setPenRadius(DEFAULT_PEN_RADIUS);
 	}
 
@@ -473,7 +470,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 * @param  radius the radius of the pen
 	 * @throws IllegalArgumentException if {@code radius} is negative
 	 */
-	public static void setPenRadius(double radius) {
+	public void setPenRadius(double radius) {
 		if (!(radius >= 0)) throw new IllegalArgumentException("pen radius must be nonnegative");
 		penRadius = radius;
 		float scaledPenRadius = (float) (radius * DEFAULT_SIZE);
@@ -572,7 +569,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 * @param  x1 the <em>x</em>-coordinate of the other endpoint
 	 * @param  y1 the <em>y</em>-coordinate of the other endpoint
 	 */
-	public static void line(double x0, double y0, double x1, double y1) {
+	public void line(double x0, double y0, double x1, double y1) {
 		offscreen.draw(new Line2D.Double(scaleX(x0), scaleY(y0), scaleX(x1), scaleY(y1)));
 		draw();
 	}
@@ -1082,7 +1079,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 * @param  y the center <em>y</em>-coordinate of the text
 	 * @param  text the text to write
 	 */
-	public static void text(double x, double y, String text) {
+	public void text(double x, double y, String text) {
 		if (text == null) throw new IllegalArgumentException();
 		offscreen.setFont(font);
 		FontMetrics metrics = offscreen.getFontMetrics();
@@ -1102,7 +1099,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 * @param  text the text to write
 	 * @param  degrees is the number of degrees to rotate counterclockwise
 	 */
-	public static void text(double x, double y, String text, double degrees) {
+	public void text(double x, double y, String text, double degrees) {
 		if (text == null) throw new IllegalArgumentException();
 		double xs = scaleX(x);
 		double ys = scaleY(y);
@@ -1333,7 +1330,11 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// this body is intentionally left empty
+
+
+		System.out.println("mouse clickd");
+		gb.addRobots(new Point3D(e.getX(), e.getY()));
+		
 	}
 
 	/**
@@ -1488,15 +1489,21 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	
 	///
 	
-	public MyGameGUI(){
+	private MyGameGUI(){ // constructor
+		
+		setCanvasSize(1100, 400);
+		setScale(0, 1100);
+		setFont(new Font("Arial", 10, 15));
 
-	    
+		picture(600, 500, "background.png", 1200, 1200);
+		
+		loadGame();
 	}
 	
 
 	   public static void main(String[] args) {
-		   MyGameGUI x = new MyGameGUI();
-		   x.loadGame();
+		  // MyGameGUI x = new MyGameGUI();
+		  // x.loadGame();
 	   }
 
 
@@ -1612,14 +1619,16 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	  //  graph g = _file.processFile();
 	    
 	    
+	   
 	    
-	    
-	    
-	   int stage = 1;
-	   Game_board gb = new Game_board(this, stage);
+	    int stage = 10;
+	    gb = new Game_board(this, stage);
 	    gb.getItems();
 	    
+	    
 	}
+	
+
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

@@ -27,7 +27,7 @@ public class ReadJSON {
 	
 	public ReadJSON(JFrame f) {this.f = f;}
 	
-	public game_metadata ReadJson_graphAndFruits(String jsonString, List<String> list_fruits) {
+	public game_metadata ReadJson_graph(String jsonString, List<String> list_fruits) {
 
 		
 		if (jsonString.isEmpty()) return null;

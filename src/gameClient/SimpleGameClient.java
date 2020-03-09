@@ -33,7 +33,7 @@ public class SimpleGameClient {
 	public static void main(String[] a) {
 		test1();}
 	public static void test1() {
-		int scenario_num = 20;
+		int scenario_num = 1;
 		game_service game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String g = game.getGraph();
 		OOP_DGraph gg = new OOP_DGraph();
@@ -52,6 +52,7 @@ public class SimpleGameClient {
 			int src_node = 0;  // arbitrary node, you should start at one of the fruits
 			for(int a = 0;a<rs;a++) {
 				game.addRobot(src_node+a);
+				
 			}
 		}
 		catch (JSONException e) {e.printStackTrace();}

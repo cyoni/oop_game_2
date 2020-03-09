@@ -30,7 +30,7 @@ public class Graph_draw {
 	
 
 	public void draw(graph myGraph)  {
-    	Graph_Algo a = new Graph_Algo();
+    
     	//a.init(myGraph);
     	
     	@SuppressWarnings("unchecked")
@@ -40,11 +40,7 @@ public class Graph_draw {
 		}
     	
     	
-		g.setCanvasSize(1100, 400);
-		g.setScale(0, 1100);
-		g.setFont(new Font("Arial", 10, 15));
-
-		g.picture(600, 500, "background.png", 1200, 1200);
+	
 		
 		Collection<node_data> my_nodes = myGraph.getV();
 		for (node_data i : my_nodes) {
@@ -90,13 +86,13 @@ public class Graph_draw {
 					// draw the edge
 					g.setPenRadius(0.001);
 					g.setPenColor(g.BLACK);
-					g.line(x, y, x2, y2);
+					g.line(x, y, node_dest.getLocation().x(), node_dest.getLocation().y());
 					
 					// write the weights
 					//setPenColor(BLUE);
 					g.setPenColor(g.GRAY);
 					
-					g.text((x+x2)/2, (y+y2)/2 +1, String.format("%.1f", edge_weight));
+					g.text((x+node_dest.getLocation().x())/2, (y+node_dest.getLocation().y())/2 +1, String.format("%.1f", edge_weight));
 					g.setPenColor(g.BLUE);
 
 					tmp_graph[i.getKey()].add(dest);
