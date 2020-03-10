@@ -37,10 +37,8 @@ public class Game_board{
 	
 	
 	public void start_game() {
-		
-		 .add_robot..add_robot.
-		 
-	game.startGame();
+				 
+/*	game.startGame();
 	OOP_DGraph gg = new OOP_DGraph();
 
 		// should be a Thread!!!
@@ -49,8 +47,40 @@ public class Game_board{
 		}
 		String results = game.toString();
 		System.out.println("Game Over: "+results);
+		*/
 		
 		
+		
+		int scenario_num = 1;
+		game_service game = Game_Server.getServer(scenario_num); // you have [0,23] games
+		String g = game.getGraph();
+		OOP_DGraph gg = new OOP_DGraph();
+		gg.init(g);
+		String info = game.toString();
+		JSONObject line;
+		try {
+			line = new JSONObject(info);
+			JSONObject ttt = line.getJSONObject("GameServer");
+			int rs = ttt.getInt("robots");
+			System.out.println(info);
+			System.out.println(g);
+			// the list of fruits should be considered in your solution
+			Iterator<String> f_iter = game.getFruits().iterator();
+			while(f_iter.hasNext()) {System.out.println(f_iter.next());}	
+			int src_node = 0;  // arbitrary node, you should start at one of the fruits
+			for(int a = 0;a<rs;a++) {
+				game.addRobot(src_node+a);
+				
+			}
+		}
+		catch (JSONException e) {e.printStackTrace();}
+		game.startGame();
+		// should be a Thread!!!
+		while(game.isRunning()) {
+			moveRobots(game, gg);
+		}
+		String results = game.toString();
+		System.out.println("Game Over: "+results);
 		
 	}
 	
@@ -112,7 +142,7 @@ public class Game_board{
 	
 	public void getItems() {
 		
-		game = Game_Server.getServer(scenario_num); // you have [0,23] games
+	/*	game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String graph_json = game.getGraph();
 		OOP_DGraph gg = new OOP_DGraph();
 		gg.init(graph_json);
@@ -148,12 +178,12 @@ public class Game_board{
 			
 			
 			
-			setRobots(num_of_robots);
+			setRobots(num_of_robots);*/
 			
 			start_game();
-		}
+	//	}
 		
-		catch (JSONException e) {e.printStackTrace();}
+	//	catch (JSONException e) {e.printStackTrace();}
 
 		
 	}
