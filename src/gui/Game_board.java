@@ -38,7 +38,7 @@ public class Game_board{
 	
 	public void start_game() {
 		
-		 
+		 .add_robot..add_robot.
 		 
 	game.startGame();
 	OOP_DGraph gg = new OOP_DGraph();
