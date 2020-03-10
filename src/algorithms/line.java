@@ -45,8 +45,8 @@ public class line {
 	public static double[] distanceBetweenLineAnd2Points(Point3D p1, Point3D p2, Point3D p) {
 		double x0 = p.x(), y0 = p.y();
 		double x1 = p1.x(), y1 = p1.y();
-		double x2 = p2.x(), y2 = p2.y();
-		if (x1 == 0 && x2 == 0) {throw new IllegalArgumentException("Argument 'divisor' is 0");}
+		double x2 = p2.x();
+			if (x1 == 0 && x2 == 0) {throw new IllegalArgumentException("Argument 'divisor' is 0");}
 		double m = (p2.y()-p1.y())/(p2.x()-p1.x());
 		double a = m;
 		double b = -1.0;

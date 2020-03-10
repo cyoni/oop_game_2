@@ -1623,7 +1623,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	    
 	   
 	    
-	    int stage = 20;
+	    int stage = 2;
 	    gb = new Game_board(this, stage);
 	    gb.getItems();
 	    

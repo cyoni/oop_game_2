@@ -8,7 +8,7 @@ import dataStructure.graph;
  * @author Yoni
  **/
 
-	public interface file_interface{
+	public interface file_interface{  
 		
 		public void loadFile();
 		public graph processFile();
