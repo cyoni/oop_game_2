@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.hamcrest.core.IsNull;
+
 
 public class DGraph implements graph, Serializable {
 
@@ -51,13 +53,13 @@ public class DGraph implements graph, Serializable {
 		list.add(edge_new);
 		e.put(src, list);
 
-		
-/*		list = e.get(dest);
+/*		
+		list = e.get(dest);
 		if (list == null) list = new ArrayList<>();
 		edge_new = new edge_metadata(dest, src, w);
 		list.add(edge_new);
-		e.put(dest, list);*/
-				
+		e.put(dest, list);
+				*/
 	}
 
 	@Override
