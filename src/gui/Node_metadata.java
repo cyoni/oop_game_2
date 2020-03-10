@@ -1,8 +1,9 @@
-package dataStructure;
+package gui;
 
 import java.io.Serializable;
 import java.util.List;
 
+import dataStructure.node_data;
 import utils.Point3D;
 
 public class Node_metadata implements node_data, Serializable {

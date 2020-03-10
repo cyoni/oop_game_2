@@ -28,5 +28,15 @@ class lineTest {
 	    assertFalse(line.isIn(p1, p2, new Point3D(1,2)));
 		
 	}
+	
+	@Test
+	void testdistanceBetweenLineAndPoint() {
+		Point3D p1 = new Point3D(130,180);
+		Point3D p2 = new Point3D(210,450);
+		Point3D p = new Point3D(521, 946);
+		double[] xx = line.distanceBetweenLineAnd2Points(p2, p1, p);
+		System.out.println(xx[0]);
+		
+	}
 
 }

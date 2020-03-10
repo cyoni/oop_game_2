@@ -21,7 +21,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import algorithms.Game_board;
 import algorithms.Graph_Algo;
 import algorithms.converter;
 import algorithms.file;
@@ -91,10 +90,10 @@ import javax.swing.KeyStroke;
 //
 public class MyGameGUI implements ActionListener, MouseListener, MouseMotionListener, KeyListener  {
 	
-	file _file;
-	public JFrame f;
-	Game_board gb;
-	
+	protected file _file;
+	protected JFrame f;
+	protected Game_board gb;
+	protected int _width = 1100, _height = 400;
 
 	/**
 	 *  The color black.
@@ -233,7 +232,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	private static MyGameGUI std = new MyGameGUI();
 
 	// the frame for drawing to the screen
-	private static JFrame frame;
+	protected static JFrame frame;
 
 	// mouse state
 	private static boolean isMousePressed = false;
@@ -307,16 +306,19 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 		ImageIcon icon = new ImageIcon(onscreenImage);
 		JLabel draw = new JLabel(icon);
 
-		draw.addMouseListener(std);
-		draw.addMouseMotionListener(std);
+		//draw.addMouseListener(std);
+		//draw.addMouseMotionListener(std);
+		draw.addMouseListener(this);
 
+		
+		
 		frame.setContentPane(draw);
 		frame.addKeyListener(std);    // JLabel cannot get keyboard focus
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
 		// frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
 		frame.setTitle("Standard Draw");
-		frame.addMouseListener(this);
+
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.requestFocusInWindow();
@@ -1047,7 +1049,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 *         or {@code scaledHeight} is negative
 	 * @throws IllegalArgumentException if the image filename is invalid
 	 */
-	public static void picture(double x, double y, String filename, double scaledWidth, double scaledHeight, double degrees) {
+	public void picture(double x, double y, String filename, double scaledWidth, double scaledHeight, double degrees) {
 		if (scaledWidth < 0) throw new IllegalArgumentException("width is negative: " + scaledWidth);
 		if (scaledHeight < 0) throw new IllegalArgumentException("height is negative: " + scaledHeight);
 		Image image = getImage(filename);
@@ -1331,9 +1333,8 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-
-		System.out.println("mouse clickd");
-		gb.addRobots(new Point3D(e.getX(), e.getY()));
+		//click
+		gb.addRobots(new Point3D(mouseX(), mouseY()));
 		
 	}
 
@@ -1491,7 +1492,8 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	
 	private MyGameGUI(){ // constructor
 		
-		setCanvasSize(1100, 400);
+	
+		setCanvasSize(_width, _height);
 		setScale(0, 1100);
 		setFont(new Font("Arial", 10, 15));
 
@@ -1520,7 +1522,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	        
 	        @Override
 	        public Dimension getPreferredSize() {
-	            return new Dimension(1100, 400);
+	            return new Dimension(_width, _height);
 	        }
 	    };
 	    f = new JFrame("Game");
@@ -1621,7 +1623,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	    
 	   
 	    
-	    int stage = 10;
+	    int stage = 20;
 	    gb = new Game_board(this, stage);
 	    gb.getItems();
 	    

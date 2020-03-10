@@ -1,7 +1,4 @@
 package algorithms;
-
-import java.util.Arrays;
-
 import utils.Point3D;
 
 public class line {
@@ -32,9 +29,31 @@ public class line {
 	 */
 	
 	public static boolean isIn(Point3D p1, Point3D p2,  Point3D point_to_check) {
-		double degree = (p2.y()-p1.y())/(p2.x()-p1.x());
+		double m = (p2.y()-p1.y())/(p2.x()-p1.x());
 		int expected = (int) point_to_check.y();
-		int result = (int) (degree*point_to_check.x()+(-1)*degree*p2.x()+ p2.y());
+		int result = (int) (m*point_to_check.x()+(-1)*m*p2.x()+ p2.y());
 		return expected-result < 10 && expected-result >= -2;	
 	}	
+	
+	/**
+	 * This method returns the closest distance and point to a line
+	 * @param p1
+	 * @param p2
+	 * @param p
+	 * @return array 
+	 */
+	public static double[] distanceBetweenLineAnd2Points(Point3D p1, Point3D p2, Point3D p) {
+		double x0 = p.x(), y0 = p.y();
+		double x1 = p1.x(), y1 = p1.y();
+		double x2 = p2.x(), y2 = p2.y();
+		if (x1 == 0 && x2 == 0) {throw new IllegalArgumentException("Argument 'divisor' is 0");}
+		double m = (p2.y()-p1.y())/(p2.x()-p1.x());
+		double a = m;
+		double b = -1.0;
+		double c = -m*x1+y1;	
+		double x_p = (b*(b*x0-a*y0)-a*c)/(a*a+b*b);
+		double y_p = (a*(-b*x0+a*y0)-b*c)/(a*a+b*b);
+		double arr[] = {Math.abs(a*x0+b*y0+c)/Math.sqrt(a*a+b*b), y_p, x_p};
+	    return arr;
+	}
 }

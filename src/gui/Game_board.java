@@ -173,20 +173,23 @@ public class Game_board{
 		List<edge_data>[] x = g.getArrayOfVertciesWithEdges();
 		//System.out.println(g.getE(1).size());
 		if (add_robot > 0) {
-			//System.out.println("robot is set at: " + _x + "," + _y );
+			System.out.println("robot is set at: " + _x + "," + _y );
 			Robot tmp_robot = new Robot(new Point3D(_x, _y));
 			boolean ok = false, flag= false;
 			double[] arr = null;
 			for (int i=0; i< x.length && !flag; i++) {
 				for (int j = 0; j < x[i].size() && !flag; j++) {
 					
-			//	System.out.println(g.getNode(i).getKey() + "->" + g.getNode(x[i].get(j).getDest()).getKey() + "[" + g.getNode(i).getLocation().x() + "," + g.getNode(i).getLocation().y() +  " - "+
-					//	g.getNode(x[i].get(j).getDest()).getLocation().x() + "," + g.getNode(x[i].get(j).getDest()).getLocation().y()+"]");
-				
-					arr = line.distanceBetweenLineAndPoint(g.getNode(i).getLocation(),
-					g.getNode(x[i].get(j).getDest()).getLocation(), new Point3D(_y, _x));
-					System.out.println(arr[0]);
-					if (arr[0] < 40) {System.out.println("OK!");  ok = true; tmp_robot = new Robot((new Point3D(arr[1],arr[2]))); flag=true;}	
+				//System.out.println(g.getNode(i).getKey() + "->" + g.getNode(x[i].get(j).getDest()).getKey() + "[" + g.getNode(i).getLocation().x() + "," + g.getNode(i).getLocation().y() +  " - "+
+				//		g.getNode(x[i].get(j).getDest()).getLocation().x() + "," + g.getNode(x[i].get(j).getDest()).getLocation().y()+"]");
+					Point3D p1 = g.getNode(i).getLocation();
+					Point3D p2 = g.getNode(x[i].get(j).getDest()).getLocation();
+					Point3D p = new Point3D(_x, _y);
+					double max = Math.max(p1.x(), p2.x());
+					double min = Math.min(p1.x(), p2.x());
+					if (!(min < p.x() && max > p.x())) continue; // the point Has to be between the line
+					arr = line.distanceBetweenLineAnd2Points(p1, p2 , p);
+					if (arr[0] < 40) {System.out.println("OK!");  ok = true; tmp_robot = new Robot((new Point3D(arr[1],arr[2]))); flag=true;}
 				//	else { x[g.getNode(j).getKey()].remove(g.getNode(i).getKey());}
 					}
 				}
@@ -194,7 +197,7 @@ public class Game_board{
 			if (!ok) {System.out.println("Please choose another point.");}
 			else {
 			game_mt.addRobot(tmp_robot);
-			//System.out.println("new loc: " + arr[1] + ","  + arr[2]);
+			System.out.println("new loc: " + arr[1] + ","  + arr[2]);
 			myGameGui.picture(arr[2], arr[1] , "robot.png", 30,60);
 			add_robot--;
 			}

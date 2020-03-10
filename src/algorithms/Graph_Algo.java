@@ -16,10 +16,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import dataStructure.DGraph;
-import dataStructure.Node_metadata;
 import dataStructure.edge_data;
 import dataStructure.graph;
 import dataStructure.node_data;
+import gui.Node_metadata;
 import utils.Point3D;
 /**
  * This empty class represents the set of graph-theory algorithms
