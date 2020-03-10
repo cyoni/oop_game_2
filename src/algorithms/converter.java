@@ -18,9 +18,7 @@ public  class converter{
 	public converter(JFrame f) {
 		this.f = f;
 	}
-0000000000000000000  //
-		//123  
-		// this is a TEST
+
 	/**
 	* this function converts coordinate to pixel
 	* @param 
