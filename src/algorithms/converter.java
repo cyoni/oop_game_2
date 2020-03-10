@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 
 import utils.Point3D;
 
-public  class converter{// HH
-	
+public  class converter{
+	//hh
 	double xTop = 32.107640;
 	double yTop = 35.212816;
 	
