@@ -11,7 +11,7 @@ public  class converter{
 	
 	double xBottom =  32.101067;
 	double yBottom =  35.184181;
-
+ //
 	private JFrame f;
 		
 	
