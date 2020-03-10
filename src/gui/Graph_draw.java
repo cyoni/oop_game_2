@@ -24,7 +24,7 @@ import utils.Point3D;
 
 public class Graph_draw {
 	MyGameGUI g;
-	
+	 
 	public Graph_draw(MyGameGUI g) {this.g = g;}
 	
 
