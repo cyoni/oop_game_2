@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 import utils.Point3D;
 
-public  class converter{
+public  class converter{// HH
 	
 	double xTop = 32.107640;
 	double yTop = 35.212816;
@@ -19,7 +19,7 @@ public  class converter{
 		this.f = f;
 	}
 
-		//123
+		
 	/**
 	* this function converts coordinate to pixel
 	* @param 
