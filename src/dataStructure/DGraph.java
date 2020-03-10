@@ -52,12 +52,11 @@ public class DGraph implements graph, Serializable {
 		e.put(src, list);
 
 		
-		list = e.get(dest);
+/*		list = e.get(dest);
 		if (list == null) list = new ArrayList<>();
 		edge_new = new edge_metadata(dest, src, w);
 		list.add(edge_new);
-		
-		e.put(dest, list);
+		e.put(dest, list);*/
 				
 	}
 
@@ -114,9 +113,8 @@ public class DGraph implements graph, Serializable {
 	@Override
 	public List<edge_data>[] getArrayOfVertciesWithEdges() {
 		List<edge_data>[] array_graph = new ArrayList[this.g.size()];
-    	for (int i = 0; i < array_graph.length; i++) {
-    		array_graph[i] = new ArrayList<>();
-		}
+    	for (int i = 0; i < array_graph.length; i++) array_graph[i] = new ArrayList<>();
+		
     	
     	for (int i = 0; i < array_graph.length; i++) {
     		array_graph[i].addAll(this.getE(i));
