@@ -64,6 +64,10 @@ public class SimpleGameClient {
 		String results = game.toString();
 		System.out.println("Game Over: "+results);
 	}
+	
+	public void setam() {
+		// this is a stem method
+	}
 	/** 
 	 * Moves each of the robots along the edge, 
 	 * in case the robot is on a node the next destination (next edge) is chosen (randomly).
