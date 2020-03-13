@@ -90,10 +90,10 @@ import javax.swing.KeyStroke;
 //
 public class MyGameGUI implements ActionListener, MouseListener, MouseMotionListener, KeyListener  {
 	
-	protected file _file;
-	protected JFrame f;
-	protected Game_board gb;
-	protected int _width = 1100, _height = 400;
+	public file _file;
+	public JFrame f;
+	public Game_board gb;
+	public int _width = 1100, _height = 400;
 
 	/**
 	 *  The color black.

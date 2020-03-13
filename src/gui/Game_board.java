@@ -15,6 +15,7 @@ import Server.game_service;
 import algorithms.ReadJSON;
 import algorithms.converter;
 import algorithms.line;
+import algorithms.split_string;
 import dataStructure.edge_data;
 import dataStructure.game_metadata;
 import dataStructure.graph;
@@ -28,8 +29,8 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class Game_board{
 	 int scenario_num;
-	 MyGameGUI myGameGui;
-	 game_metadata game_mt; // contains graph, list of fruits, robots
+	static MyGameGUI myGameGui;
+	 game_metadata game_mt; // contains converted graph, list of fruits, robots
 	 private int add_robot;
 	 private game_service game;
 	 
@@ -52,10 +53,10 @@ public class Game_board{
 		
 		
 		int scenario_num = 1;
-		game_service game = Game_Server.getServer(scenario_num); // you have [0,23] games
-		String g = game.getGraph();
+		game = Game_Server.getServer(scenario_num); // you have [0,23] games
+		String graph_json = game.getGraph();
 		OOP_DGraph gg = new OOP_DGraph();
-		gg.init(g);
+		gg.init(graph_json);
 		String info = game.toString();
 		JSONObject line;
 		try {
@@ -63,15 +64,32 @@ public class Game_board{
 			JSONObject ttt = line.getJSONObject("GameServer");
 			int rs = ttt.getInt("robots");
 			System.out.println(info);
-			System.out.println(g);
+			System.out.println(graph_json);
 			// the list of fruits should be considered in your solution
 			Iterator<String> f_iter = game.getFruits().iterator();
-			while(f_iter.hasNext()) {System.out.println(f_iter.next());}	
+			//List<Fruit> fruits = new ArrayList<Fruit>();
+			//while(f_iter.hasNext())  fruits.add(readFruit(f_iter.next())); /*System.out.println(f_iter.next());*/;
+			
+			// initiate graph & fruits
+			
 			int src_node = 0;  // arbitrary node, you should start at one of the fruits
 			for(int a = 0;a<rs;a++) {
+				System.out.println("!!!");
 				game.addRobot(src_node+a);
 				
 			}
+						
+			game_mt = ReadJSON.ReadJson_graph(myGameGui.f, graph_json, game.getFruits()
+					, game.getRobots());
+			
+			/*
+			 * Graph_draw gd = new Graph_draw(myGameGui); gd.draw(game_mt.getGraph());
+			 */
+
+			drawGraph();
+			drawFruits();
+			drawRobots();
+			
 		}
 		catch (JSONException e) {e.printStackTrace();}
 		game.startGame();
@@ -85,6 +103,48 @@ public class Game_board{
 	}
 	
 	
+	private void drawGraph() {
+		Graph_draw gd = new Graph_draw(myGameGui);
+		gd.draw(game_mt.getGraph());
+	}
+
+
+	private void drawRobots() {
+		List<Robot> robots = game_mt.getRobots();
+		
+		for (int i = 0; i < robots.size(); i++) {
+		myGameGui.picture(robots.get(i).getPos().x(), robots.get(i).getPos().y() , "robot.png", 30,60);
+		}
+		
+	}
+
+
+	private Fruit readFruit(String data) {
+		try {
+		JSONObject line = new JSONObject(data);
+		JSONObject t = line.getJSONObject("Fruit");
+		
+
+		double value = t.getDouble("value");
+		int type = t.getInt(("type"));	
+		String pos = t.getString(("pos"));
+
+		String point[] = pos.split(",");
+		double x = Double.parseDouble(point[0]);
+		double y = Double.parseDouble(point[1]);
+		//double z = Double.parseDouble(point[2]);
+
+		return (new Fruit(value, type, new converter(myGameGui.f).coordsToPixel(y, x)));
+
+		}
+		catch(Exception c){System.out.println(c);	}
+
+		
+		
+		return null;
+	}
+
+
 	/** 
 	 * Moves each of the robots along the edge, 
 	 * in case the robot is on a node the next destination (next edge) is chosen (randomly).
@@ -104,13 +164,23 @@ public class Game_board{
 					int rid = ttt.getInt("id");
 					int src = ttt.getInt("src");
 					int dest = ttt.getInt("dest");
-				
-					if(dest==-1) {	
+					String pos = ttt.getString("pos");
+					
+					Point3D p = split_string.get_pos_frm_str_and_convert(myGameGui.f, pos);
+					  myGameGui.picture(p.x(), p.y() , "robot.png", 30,60);
+					if(dest==-1) {
 						dest = nextNode(gg, src);
 						game.chooseNextEdge(rid, dest);
-						
 						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
 						System.out.println(ttt);
+						// to update the location of the robot in the robot list
+					  
+						///
+						
+						
+						
+						///
+						
 					}
 				} 
 				catch (JSONException e) {e.printStackTrace();}
@@ -141,7 +211,7 @@ public class Game_board{
 	
 	
 	public void getItems() {
-		
+
 	/*	game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String graph_json = game.getGraph();
 		OOP_DGraph gg = new OOP_DGraph();
@@ -303,7 +373,7 @@ public class Game_board{
 		
 		if (add_robot > 0) {
 			System.out.println("robot is set at: " + _x + "," + _y );
-			Robot tmp_robot = new Robot(new Point3D(_x, _y));
+			///Robot tmp_robot = new Robot(new Point3D(_x, _y));
 			boolean ok = false, flag= false;
 			double[] arr = null;
 			for (int i=0; i< x.length && !flag; i++) {
@@ -320,7 +390,7 @@ public class Game_board{
 					if (!(min < p.x() && max > p.x())) continue; // the point Has to be between the line
 					arr = line.distanceBetweenLineAnd2Points(p1, p2 , p);
 					if (min_distance > arr[0] && arr[0] < 20) {
-						min_distance = arr[0];tmp_robot = new Robot((new Point3D(arr[1],arr[2])));ok = true;
+			//			min_distance = arr[0];tmp_robot = new Robot((new Point3D(arr[1],arr[2])));ok = true;
 						
 						}
 					
@@ -330,9 +400,9 @@ public class Game_board{
 			
 			if (!ok) {System.out.println("Please choose another point.");}
 			else {
-			game_mt.addRobot(tmp_robot);
+		//	game_mt.addRobot(tmp_robot);
 			System.out.println("new loc: " + arr[1] + ","  + arr[2]);
-			myGameGui.picture(tmp_robot.getPos().y(),tmp_robot.getPos().x() , "robot.png", 30,60);
+		//	myGameGui.picture(tmp_robot.getPos().y(),tmp_robot.getPos().x() , "robot.png", 30,60);
 			add_robot--;
 			if (add_robot == 0) System.out.println("click again to start");
 			}
