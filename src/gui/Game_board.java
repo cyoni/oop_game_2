@@ -67,12 +67,9 @@ public class Game_board{
 			System.out.println(graph_json);
 			// the list of fruits should be considered in your solution
 			Iterator<String> f_iter = game.getFruits().iterator();
-			//List<Fruit> fruits = new ArrayList<Fruit>();
-			//while(f_iter.hasNext())  fruits.add(readFruit(f_iter.next())); /*System.out.println(f_iter.next());*/;
-			
-			// initiate graph & fruits
-			
-			int src_node = 0;  // arbitrary node, you should start at one of the fruits
+			System.out.println("fruits " + f_iter.toString());
+			//while(f_iter.hasNext()) {System.out.println(f_iter.next());}	
+				int src_node = 0;  // arbitrary node, you should start at one of the fruits
 			for(int a = 0;a<rs;a++) {
 				System.out.println("!!!");
 				game.addRobot(src_node+a);
