@@ -1196,7 +1196,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 * @deprecated replaced by {@link #enableDoubleBuffering()}, {@link #show()}, and {@link #pause(int t)}
 	 */
 	@Deprecated
-	public static void show(int t) {
+	public void show(int t) {
 		show();
 		pause(t);
 		enableDoubleBuffering();
@@ -1235,7 +1235,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 * and {@code square()} will be deffered until the next call
 	 * to show(). Useful for animations.
 	 */
-	public static void enableDoubleBuffering() {
+	public void enableDoubleBuffering() {
 		defer = true;
 	}
 

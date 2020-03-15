@@ -3,6 +3,9 @@ package dataStructure;
 import java.util.ArrayList;
 import java.util.List;
 
+import Server.game_service;
+import algorithms.ReadJSON;
+import gui.MyGameGUI;
 import items.Fruit;
 import items.Robot;
 
@@ -13,36 +16,39 @@ import items.Robot;
 
 public class game_metadata{
 	
-	private graph g;
-	private List<Fruit> fruits;
+	public game_service service;
+	private ReadJSON readJ;
 	private List<Robot> robots;
-
+	private graph game_graph;
 	
-	public game_metadata(graph g, List<Fruit> fruits, List<Robot> robots) {
-		this.g = g;
-		this.robots = new ArrayList<>();
-		this.fruits = new ArrayList<>(fruits);
-		this.robots = new ArrayList<Robot>(robots);
+	public game_metadata(MyGameGUI gameGui, game_service game) {
+		this.service = game;
+		readJ = new ReadJSON(gameGui.f);
+		robots = readJ.readRobots(service.getRobots());
+		this.game_graph = readJ.readGraph(service.getGraph());
 	}
 	
-	public void addRobot(Robot r) {
-		robots.add(r);		
+	public List<Robot> getRobots() {return robots;};
+	public List<Fruit> getFruits() {return readJ.readFruits(service.getFruits());}
+	public graph getGraph() {return game_graph;}
+
+	public void updateRobots(List<Robot> list_robots) {
+
+		robots.clear();
+		robots.addAll(list_robots);
+		
+		
+		
+		/*for (Robot robot : list_robots) {*/
+/*			robot.setDest(robot.getDest());
+			getRobot().setPos(robot.getPos());
+			getRobot().setSpeed(robot.getSpeed());
+			getRobot().setSrc(robot.getSrc());
+			getRobot().setValue(robot.getValue());*/
+			
+		/*}*/
+		
 	}
 	
-	public List<Robot> getRobots() {return robots;}
-	
-	
-	public Robot getRobot(int n) { if (robots.size() > n) return robots.get(n); else return null;}
-
-	
-	
-	public List<Fruit> getFruits() {
-		return fruits;
-	}
-	
-	public graph getGraph() {return g;}
-	
-	
-
 
 }

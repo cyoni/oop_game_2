@@ -20,9 +20,15 @@ import items.Fruit;
 import items.Robot;
 
 public class ReadJSON {
-	static JFrame f;
+	 JFrame f;
 	
-	public static game_metadata ReadJson_graph(JFrame F, String jsonString, List<String> list_fruits, List<String> list_robots) {
+	 
+	 public ReadJSON(JFrame f) {
+		 this.f = f;
+	 }
+	 
+	 /*
+	public  game_metadata ReadJson_graph(JFrame F, String jsonString, List<String> list_fruits, List<String> list_robots) {
 
 		if (jsonString.isEmpty()) return null;
 		 f = F;
@@ -102,10 +108,10 @@ public class ReadJSON {
 				}
 	
 		////////////////////////////////////////////////////			
-			return new game_metadata(g, fruits, robots);
-	}
+			return null;//new game_metadata(g, fruits, robots);
+	}*/
 
-	public static Robot readRobot(String robot) {
+	public  Robot readRobot(String robot) {
 		Robot r = null;
 		try {
 		JSONObject obj = new JSONObject(robot.toString()).getJSONObject("Robot");
@@ -125,5 +131,90 @@ public class ReadJSON {
 	}
 	
 	
+	
+	
+	
+	
+
+	public  graph readGraph(String str_graph) { // reads nodes and edges
+
+
+		List<edge_data> Edges = new ArrayList<>();
+		List<node_data> Nodes = new ArrayList<>();
+		try {
+				JSONObject obj = new JSONObject(str_graph);
+				JSONArray arr = obj.getJSONArray("Edges");
+				for (int i = 0; i < arr.length(); i++) // get data of Edges
+					{
+						int src = arr.getJSONObject(i).getInt(("src"));
+						double w = arr.getJSONObject(i).getDouble(("w"));
+						int dest = arr.getJSONObject(i).getInt(("dest"));
+						Edges.add(new edge_metadata(src, dest, w));
+					}
+				arr = obj.getJSONArray("Nodes"); // get data of Nodes
+				for (int i = 0; i < arr.length(); i++) // get data of Edges
+				{
+					String pos = arr.getJSONObject(i).getString(("pos"));
+					int id = arr.getJSONObject(i).getInt(("id"));	
+					String point[] = pos.split(",");
+					double x = Double.parseDouble(point[0]);
+					double y = Double.parseDouble(point[1]);
+					double z = Double.parseDouble(point[2]);
+					Nodes.add(new Node_metadata(id, new converter(f).coordsToPixel(y, x), z));
+					}
+				}
+			 catch (JSONException e) {
+					e.printStackTrace();
+				}
+		
+				graph g = new DGraph();
+				
+				for (int i = 0; i < Nodes.size(); i++) {
+					g.addNode(Nodes.get(i));
+				}
+				for (int i = 0; i < Edges.size(); i++) {
+					g.connect(Edges.get(i).getSrc(), Edges.get(i).getDest(), Edges.get(i).getWeight());
+				}
+		
+		
+		return g;
+	}
+
+	public  List<Fruit> readFruits(List<String> str_fruits) {
+			List<Fruit> fruits = new ArrayList<>();
+			JSONObject obj; 
+			if (!str_fruits.isEmpty()) {
+			try {
+				for (String item : str_fruits) {
+				obj = new JSONObject(item.toString());
+				
+				double value = obj.getJSONObject("Fruit").getDouble("value");
+				int type = obj.getJSONObject("Fruit").getInt(("type"));	
+				String pos = obj.getJSONObject("Fruit").getString(("pos"));
+	
+				String point[] = pos.split(",");
+				double x = Double.parseDouble(point[0]);
+				double y = Double.parseDouble(point[1]);
+				//double z = Double.parseDouble(point[2]);
+	
+				fruits.add(new Fruit(value, type, new converter(f).coordsToPixel(y, x)));
+				}
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+			return fruits;		
+	}
+
+	public  List<Robot> readRobots(List<String> robots) {
+		List<Robot> list_robots = new ArrayList<>();
+		
+		for (String robot : robots) {
+			list_robots.add(readRobot(robot));
+		}
+		return list_robots;
+	}
 
 }

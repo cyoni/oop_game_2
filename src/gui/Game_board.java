@@ -43,7 +43,7 @@ public class Game_board{
 	
 	
 	public void start_game() {
-		int scenario_num = 23;
+		int scenario_num = 1;
 		game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String graph_json = game.getGraph();
 		game_graph = new OOP_DGraph();
@@ -65,12 +65,16 @@ public class Game_board{
 				game.addRobot(src_node+a);
 				
 			}
-						
-			game_mt = ReadJSON.ReadJson_graph(myGameGui.f, graph_json, game.getFruits()
-					, game.getRobots());
+					
 			
-			drawRobots();
-			drawObjects();
+			game_mt = new game_metadata(myGameGui, game);
+			//game_mt = ReadJSON.ReadJson_graph(myGameGui.f, graph_json, game.getFruits()
+				//	, game.getRobots());
+			
+			//drawObjects();
+		//	drawGraph();
+			//drawRobots();
+
 			
 		}
 		catch (JSONException e) {e.printStackTrace();}
@@ -83,29 +87,27 @@ public class Game_board{
 	}
 	
 	
-	public synchronized void drawObjects() {
-		myGameGui.picture(600, 500, "background.png", 1200, 1200);
-		drawGraph();
-		drawFruits();
+	public void drawObjects() {
+		
+		//drawFruits();
 	}
 
 
-	private synchronized void drawGraph() {
-		Graph_draw gd = new Graph_draw(myGameGui);
-		gd.draw(game_mt.getGraph());
+	private void drawGraph() {
+
 	}
 
 
 	private void drawRobots() {
 
-		List<String> robots = game.getRobots();
+/*		List<String> robots = game.getRobots();
 		
 		for (int i = 0; i < robots.size(); i++) {
 		Robot r = ReadJSON.readRobot(robots.get(i));
 		
 		myGameGui.picture(r.getPos().x(), r.getPos().y() , "robot.png", 30,60);
 		}
-		
+		*/
 	}
 
 
@@ -140,14 +142,12 @@ public class Game_board{
 		
 		//moveRobots(game, game_graph);
 
-		int robots = game.getRobots().size();
-		
-		for (int i=0; i< robots; i++) {
-			g_threads.add(new GameThread(0, game_mt, this, game_graph, game, myGameGui, game.getRobots().get(i)));
-			System.out.println("Thread ID " + g_threads.get(i).getId() + " joined.");
-			g_threads.get(i).start();
-		}
 
+		
+		
+		GameThread thread = new GameThread(game_mt, myGameGui); // this thread updates the screen and the location of the robots.
+		
+		thread.start();
 
 	}
 
@@ -270,61 +270,7 @@ public class Game_board{
 	}
 
 
-	/**
-	 * This function draws the fruits on the screen.
-	 * Apples will be printed on edges that its edge increases e.g   2---->6
-	 * Strawberries will be printed on edges that its edge decreases e.g  5---->2*/
 	
-	private void drawFruits() {
-
-
-		if (game_mt.getFruits().isEmpty()) return;
-
-		List<edge_data>[] array_of_graph = game_mt.getGraph().getArrayOfVertciesWithEdges();
-		List<Fruit> tmp_fruit_list = new ArrayList<>(game_mt.getFruits());
-		boolean flag = true;
-		
-		for (int i=0; i < tmp_fruit_list.size(); i++) {
-			Fruit current_fruit = tmp_fruit_list.get(i);
-			
-			flag = true;
-					
-			for (int j = 0; j < array_of_graph.length && flag; j++) {
-				for (int k = 0; k < array_of_graph[j].size() && flag; k++) {
-					int dest = array_of_graph[j].get(k).getDest();
-					Point3D pos = game_mt.getGraph().getNode(dest).getLocation();
-
-					if (line.isIn(game_mt.getGraph().getNode(j).getLocation(), pos, current_fruit.getPos())) {
-						tmp_fruit_list.remove(current_fruit); i--;
-						flag = false;
-
-						if (game_mt.getGraph().getNode(j).getLocation().y() > game_mt.getGraph().getNode(dest).getLocation().y()) {
-						myGameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "apple.png", 30,60);
-						System.out.println(current_fruit.getPos().x() + "," + current_fruit.getPos().y());
-						}
-						else {
-							myGameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "banana.png", 30,60, 60);						}
-					}
-				}
-			}
-
-		}
-	
-/*		System.out.println("--");
-		System.out.println(game_mt.g.getNode(12).getLocation().x() + "," + game_mt.g.getNode(12).getLocation().y() + " = 12->13");
-		System.out.println(game_mt.g.getNode(13).getLocation().x() + "," + game_mt.g.getNode(13).getLocation().y() + " = 13->13");
-		System.out.println(tmp_fruit_list.get(0).getPos().x() + "," + tmp_fruit_list.get(0).getPos().y() + " fruit");
-		for (int i = 0; i < tmp_fruit_list.size(); i++) {
-			
-			System.out.println(tmp_fruit_list.get(i).getPos().x() + " - " + tmp_fruit_list.get(i).getPos().y() + " i=" + i);	
-		}
-		
-		line.isIn(game_mt.g.getNode(12).getLocation(), game_mt.g.getNode(13).getLocation(), tmp_fruit_list.get(0).getPos());
-		
-		*/
-		
-		
-	}
 
 
 	/**
@@ -362,17 +308,44 @@ public class Game_board{
 		if (!ok) {System.out.println("Couldn't find any edges around.");}
 		else {
 		System.out.println("OK. new location: " + arr[1] + ","  + arr[2] + ". Edge: " + edge.getSrc() + "," + edge.getDest());
-		sendEdgeToThreads(edge);
+		
+		
+		//game_mt.getRobots();
+		// look for the robot that its id is src or dest
+		// if found: update its id to the new node
+		
+		
+		for (Robot current_robot : game_mt.getRobots()) {
+			
+			if (current_robot.getDest() == -1) { // if it's -1 it means the robot stands still			
+					int target = -1;			
+					if (game_mt.getGraph().getEdge(current_robot.getSrc(), edge.getSrc()) != null  && edge.getDest() == current_robot.getSrc()|| 
+						game_mt.getGraph().getEdge(current_robot.getSrc(), edge.getDest()) != null && edge.getSrc() == current_robot.getSrc()) {
+						if (edge.getSrc() == current_robot.getSrc()) target = edge.getDest();
+						else target = edge.getSrc();
+						current_robot.setDest(target); 
+						System.out.println("Turn to node: "+target);
+						game_mt.service.chooseNextEdge(current_robot.getID(), target);
+					}
+				}
+			
+		}
+		
+		
+		
+		
+		// TODO 
+		//sendEdgeToThreads(edge);
 		}
 	}
 
 
-	private void sendEdgeToThreads(edge_data edge) {
+/*	private void sendEdgeToThreads(edge_data edge) {
 		for (int i = 0; i < g_threads.size(); i++) {
 			g_threads.get(i).edge_broadcast(edge);
 		}
 		
-	}
+	}*/
 
 
 /*
