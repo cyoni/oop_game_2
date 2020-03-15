@@ -20,10 +20,12 @@ import items.Fruit;
 import items.Robot;
 
 public class ReadJSON {
+	static JFrame f;
 	
-	public static game_metadata ReadJson_graph(JFrame f, String jsonString, List<String> list_fruits, List<String> list_robots) {
+	public static game_metadata ReadJson_graph(JFrame F, String jsonString, List<String> list_fruits, List<String> list_robots) {
 
 		if (jsonString.isEmpty()) return null;
+		 f = F;
 		
 		//game_metadata gmt = new game_metadata();
 		List<edge_data> Edges = new ArrayList<>();
@@ -95,32 +97,31 @@ public class ReadJSON {
 		////////////////////////////////////////////////// get Robots
 	
 			List<Robot> robots = new ArrayList<Robot>();
-			
-			try {
 				for (String robot : list_robots) {
-				obj = new JSONObject(robot.toString()).getJSONObject("Robot");
-				
-				int id = obj.getInt(("id"));	
-				double value = obj.getDouble("value");
-				int src = obj.getInt(("src"));
-				int dest = obj.getInt(("dest"));
-				int speed = obj.getInt(("speed"));
-				String pos = obj.getString(("pos"));
-
-				String point[] = pos.split(",");
-				double x = Double.parseDouble(point[0]);
-				double y = Double.parseDouble(point[1]);
-				//double z = Double.parseDouble(point[2]);
-
-				robots.add(new Robot(id, value, src, dest, speed, new converter(f).coordsToPixel(y, x)));
+					robots.add(readRobot(robot));
 				}
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
 	
 		////////////////////////////////////////////////////			
 			return new game_metadata(g, fruits, robots);
+	}
+
+	public static Robot readRobot(String robot) {
+		Robot r = null;
+		try {
+		JSONObject obj = new JSONObject(robot.toString()).getJSONObject("Robot");
+		
+		int id = obj.getInt(("id"));	
+		double value = obj.getDouble("value");
+		int src = obj.getInt(("src"));
+		int dest = obj.getInt(("dest"));
+		int speed = obj.getInt(("speed"));
+		String pos = obj.getString(("pos"));
+
+			r = new Robot(id, value, src, dest, speed, split_string.get_pos_frm_str_and_convert(f, pos));
+		}
+		catch(Exception c) {}
+		
+			return r;
 	}
 	
 	

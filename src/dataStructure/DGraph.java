@@ -35,7 +35,13 @@ public class DGraph implements graph, Serializable {
 
 	@Override
 	public edge_data getEdge(int src, int dest) {
-		return e.get(src).get(dest);
+		edge_data edge = null;
+		List<edge_data> list = e.get(src);
+		for (edge_data current_edge : list) {
+			if (current_edge.getDest() == dest) edge = current_edge; 
+			
+		}
+		return edge;
 	}
 
 	@Override
@@ -53,13 +59,14 @@ public class DGraph implements graph, Serializable {
 		list.add(edge_new);
 		e.put(src, list);
 
-/*		
+	
 		list = e.get(dest);
 		if (list == null) list = new ArrayList<>();
 		edge_new = new edge_metadata(dest, src, w);
 		list.add(edge_new);
 		e.put(dest, list);
-				*/
+		
+				
 	}
 
 	@Override
@@ -102,7 +109,7 @@ public class DGraph implements graph, Serializable {
 
 	@Override
 	public int edgeSize() {
-		return e.size()/2;
+		return e.size();
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -93,7 +94,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	public file _file;
 	public JFrame f;
 	public Game_board gb;
-	public int _width = 1100, _height = 400;
+	private static JMenuItem menuItem_start_new_game,  menuItem_manual_game, menuItem_automatic_game;
 
 	/**
 	 *  The color black.
@@ -328,14 +329,53 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	// create the menu bar (changed to private)
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");
-		menuBar.add(menu);
+		JMenu menu1 = new JMenu("File");
+		JMenu menu2 = new JMenu("Game");
+
+		menuBar.add(menu1);
+		menuBar.add(menu2);
+		
 		JMenuItem menuItem1 = new JMenuItem(" Save...   ");
-		menuItem1.addActionListener(std);
-		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		menu.add(menuItem1);
+		
+		menuItem_start_new_game = new JMenuItem(" Start a new game   ");
+		menuItem_manual_game =  new JCheckBoxMenuItem(" Manual game   ");
+		menuItem_automatic_game =  new JCheckBoxMenuItem(" Automatic game   ");
+		JMenuItem menuItem_resumeOrPause = new JMenuItem(" Pause/Resume   ");
+
+		
+
+		menu1.add(menuItem1);
+		
+		menu2.add(menuItem_start_new_game);
+		menu2.addSeparator();
+		menu2.add(menuItem_manual_game);
+		menu2.add(menuItem_automatic_game);
+		menu2.addSeparator();
+		menu2.add(menuItem_resumeOrPause);
+		
 		return menuBar;
+	}
+	
+	
+	private void start_mouse_listener() {
+
+		menuItem_manual_game.addActionListener((ActionEvent e) -> {
+            System.exit(0);
+        });
+
+
+        
+	
+		menuItem_start_new_game.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        
+
+
+
 	}
 
 
@@ -1334,7 +1374,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	public void mouseClicked(MouseEvent e) {
 
 		//click
-		gb.addRobots(new Point3D(mouseX(), mouseY()));
+		gb.getEdge(new Point3D(mouseX(), mouseY()));
 		
 	}
 
@@ -1493,12 +1533,9 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	private MyGameGUI(){ // constructor
 		
 	
-		setCanvasSize(_width, _height);
+		setCanvasSize(1400, 600);
 		setScale(0, 1100);
-		setFont(new Font("Arial", 10, 15));
-
-		picture(600, 500, "background.png", 1200, 1200);
-		
+		setFont(new Font("Arial", 10, 15));		
 		loadGame();
 	}
 	
@@ -1511,6 +1548,8 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 
 	private void loadGame() {
 		// TODO Auto-generated method stub
+		
+		start_mouse_listener();
 		ImageIcon icon = new ImageIcon("background.png");
 	    Image image = icon.getImage();
 	    JPanel panel1 = new JPanel() {
@@ -1522,92 +1561,13 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	        
 	        @Override
 	        public Dimension getPreferredSize() {
-	            return new Dimension(_width, _height);
+	            return new Dimension(1000, 800);
 	        }
 	    };
 	    f = new JFrame("Game");
 /*	    
 	    
-		f.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println(e.getX() + "," + (f.getHeight()- e.getY()));
-				converter c = new converter(f);
-				
-				
-			//	System.out.println(a.x() + ", " + a.y());
-			
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-		});*/
-	    
-		
-	/*    // set menu:
-	    JMenuBar mb; 
-	    
-        // create a menu bar 
-        mb = new JMenuBar(); 
-  
-        // create a menu 
-        JMenu x = new JMenu("Menu"); 
-        JMenu x2 = new JMenu("Game"); 
-
-
-        // create menu items 
-        JMenuItem m1 = new JMenuItem("Load map..."); 
-        JMenuItem m2 = new JMenuItem("Exit"); 
-
-        JMenuItem m3 = new JMenuItem("Start");
-
-  
-        // add ActionListener to menuItems 
-        m1.addActionListener(this); 
-        m2.addActionListener(this); 
-
-        // add menu items to menu 
-        x.add(m1); 
-        x.add(m2); 
-        
-        x2.add(m3);
-   
-        // add menu to menu bar 
-        mb.add(x); 
-        mb.add(x2);
-  
-        // add menu bar to frame 
-        f.setJMenuBar(mb); 
-	    
-	    f.add((panel1),BorderLayout.CENTER);
-	    f.pack();
-	    f.setLocationRelativeTo(null); // open the window in the middle
-*/	  //  f.setVisible(true);
-	   // f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    
+	*/
 	    
 	    // FOR DEVELOPMENT PURPOSES ONLY
 	    
@@ -1623,9 +1583,22 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	    
 	   
 	    
-	    int stage = 2;
+	    int stage = 1;
 	    gb = new Game_board(this, stage);
 	    gb.getItems();
+	    
+	    //   setScale(-2, +2);
+	     //  enableDoubleBuffering();
+	    
+/*	       for (double t = 0.0; true; t += 0.01) {
+	           double x = Math.sin(t);
+	           double y = Math.sin(t);
+	           clear();
+	           filledCircle(x, y, 0.05);
+	           filledCircle(-x, -y, 0.05);
+	           show();
+	           pause(20);
+	       }*/
 	    
 	    
 	}

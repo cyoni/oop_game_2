@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Font;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,10 +38,7 @@ public class Graph_draw {
     	for (int i = 0; i < tmp_graph.length; i++) {
 			tmp_graph[i] = new ArrayList<>();
 		}
-    	
-    	
-	
-		
+
 		Collection<node_data> my_nodes = myGraph.getV();
 		for (node_data i : my_nodes) {
 			node_data currnet_node = i;
@@ -86,6 +84,7 @@ public class Graph_draw {
 					g.setPenRadius(0.001);
 					g.setPenColor(g.BLACK);
 					g.line(x, y, node_dest.getLocation().x(), node_dest.getLocation().y());
+	
 					
 					// write the weights
 					//setPenColor(BLUE);

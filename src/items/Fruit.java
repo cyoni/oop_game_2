@@ -9,22 +9,14 @@ import utils.Point3D;
  */
 
 
-public class Fruit {
-	private double value;
-	private int type;
-	private Point3D pos;
-	private double z;
-	
+public class Fruit extends Fruit_metadata {
+
 	public Fruit(double value, int type, Point3D p) {
-		this.value = value;
-		this.type = type;
-		this.pos = p;
-		}
-	
-	public Point3D getPos() {
-		return pos;
+		super(value, type, p);
 	}
+
 	
+	public Fruit getFruit() {return this;}
 	
 	
 }
