@@ -97,4 +97,7 @@ public interface graph {
 	public int getMC();
 	
 	
+	public List<edge_data> getEdges();
+	
+	
 }

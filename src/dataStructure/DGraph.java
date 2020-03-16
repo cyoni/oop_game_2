@@ -59,13 +59,13 @@ public class DGraph implements graph, Serializable {
 		list.add(edge_new);
 		e.put(src, list);
 
-	
+/*	
 		list = e.get(dest);
 		if (list == null) list = new ArrayList<>();
 		edge_new = new edge_metadata(dest, src, w);
 		list.add(edge_new);
 		e.put(dest, list);
-		
+		*/
 				
 	}
 
@@ -129,6 +129,29 @@ public class DGraph implements graph, Serializable {
     		array_graph[i].addAll(this.getE(i));
 		}
 		return array_graph;
+	}
+	
+	
+	public List<edge_data> getEdges() {
+		
+		List<Integer>[] array_graph = new ArrayList[this.g.size()];
+    	for (int i = 0; i < array_graph.length; i++) array_graph[i] = new ArrayList<>();
+		List<edge_data> list = new ArrayList<>();
+		
+		
+		for (Entry<Integer, List<edge_data>> edges : e.entrySet()) {
+			List<edge_data> list_Edges = edges.getValue();
+			for (edge_data current_edge : list_Edges) {
+				
+				if (array_graph[current_edge.getDest()].contains(current_edge.getSrc()) ) continue;
+				
+				array_graph[current_edge.getSrc()].add(current_edge.getDest());
+				
+				//System.out.println("added " + current_edge.getSrc() + "," +current_edge.getDest());
+				list.add(current_edge);
+			}
+		}
+		return list;
 	}
 
 }

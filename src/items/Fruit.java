@@ -16,7 +16,7 @@ public class Fruit extends Fruit_metadata {
 	}
 
 	
-	public Fruit getFruit() {return this;}
+	//public Fruit getFruit() {return this;}
 	
 	
 }

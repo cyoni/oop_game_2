@@ -7,7 +7,7 @@ public class line {
 	 * This function returns a point somewhere between a line
 	 * @return vector
 	 **/
-	public static double[] getPointOnLine(Point3D p1, Point3D p2, int percent) {
+	public static Point3D getPointOnLine(Point3D p1, Point3D p2, int percent) {
 		double x1 = p1.x(), y1 = p1.y();
 		double x2 = p2.x(), y2 = p2.y();
 			
@@ -17,7 +17,7 @@ public class line {
 		double distance = Math.sqrt(Math.pow((x2-x1), 2) + Math.pow(y2-y1, 2));
 		double x = x1 + u[0] * distance*((double)percent/100); 
 		double y = y1 + u[1] * distance*((double)percent/100);
-		return new double[]{x,y};
+		return new Point3D(x,y);
 	}
 	
 	/**

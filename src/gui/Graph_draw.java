@@ -63,11 +63,11 @@ public class Graph_draw {
 				
 					node_data node_dest = myGraph.getNode(dest);
 
-					double loc[] = line.getPointOnLine(i.getLocation(), node_dest.getLocation(), 90); // draw a small dot to the edge you're going to
+					Point3D loc = line.getPointOnLine(i.getLocation(), node_dest.getLocation(), 90); // draw a small dot to the edge you're going to
 
 					g.setPenColor(g.YELLOW);
 					g.setPenRadius(0.015);
-					g.point(loc[0], loc[1]);
+					g.point(loc.x(), loc.y());
 					
 					if (tmp_graph[i.getKey()].contains(dest)) 	continue;
 					

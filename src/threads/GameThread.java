@@ -176,54 +176,19 @@ public class GameThread extends Thread{
 	
 			if (game_mt.getFruits().isEmpty()) return;
 
-
 			graph Graph = game_mt.getGraph();
-			List<Integer>[] arr = new ArrayList[Graph.nodeSize()];
-			for (int i = 0; i < arr.length; i++) {
-				arr[i] = new ArrayList<>();
-			}
-			
-
-			
-			
 			List<Fruit> fruits = game_mt.getFruits();
-			
 			for (Fruit current_fruit : fruits) {
-
-				for (int i = 0; i < Graph.nodeSize(); i++) {
-
-					node_data current_node = Graph.getNode(i);
-					for (int j = 0; j < Graph.getE(current_node.getKey()).size(); j++) {
-						Collection<edge_data> node_edges = Graph.getE(current_node.getKey());
-
-							for (edge_data current_edge : node_edges) {
-								int dest = current_edge.getDest();
-							boolean check =	line.isIn(current_node.getLocation(),  Graph.getNode(dest).getLocation(), current_fruit.getPos());
-
-							if (check && !(arr[i].contains(dest))) {
-								arr[dest].add(i);
-								if (game_mt.getGraph().getNode(current_node.getKey()).getLocation().y() > game_mt.getGraph().getNode(dest).getLocation().y()) {
-									
-									gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "apple.png", 30,60);
-								}
-								else {
-									gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "banana.png", 30,60);
-								}
-							}
-								
-								
-							}
-								
-
-						
-						
+			
+					if(current_fruit.getType() == -1) {
+						gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "banana.png", 30,60, 60);
 					}
-					
-				}
-				
-				//gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "apple.png", 30,60);
+					else {
+						gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "apple.png", 30,60);
 
+						}
 			}
+
 			
 			
 		/*	for (int i=0; i < tmp_fruit_list.size(); i++) {

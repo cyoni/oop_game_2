@@ -41,9 +41,9 @@ public class Game_board{
 	 
 	public Game_board(MyGameGUI myGameGui , int stage) {Game_board.myGameGui = myGameGui; this.scenario_num = stage;  g_threads = new ArrayList<>();}
 	
-	
+	// the server only displays fruits and animates the movement of the robot when the user selects a dest.
 	public void start_game() {
-		int scenario_num = 1;
+		int scenario_num = 0;
 		game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String graph_json = game.getGraph();
 		game_graph = new OOP_DGraph();
