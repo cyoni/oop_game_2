@@ -6,26 +6,26 @@ import java.util.Queue;
 import java.util.Stack;
 
 import algorithms.Graph_Algo;
+import algorithms.converter;
 import dataStructure.game_metadata;
 import dataStructure.node_data;
 import gui.Game_board;
 import gui.MyGameGUI;
 import items.Fruit;
 import items.Robot;
+import sun.util.calendar.CalendarUtils;
 
 public class Plan_move_thread extends Thread {
 	
 	private Graph_Algo graph_algo;
 	private MyGameGUI gameGui;
 	private game_metadata game_mt;
-	List<Fruit> available_fruits = new ArrayList<>();
-	//List<Fruit> targeted_fruits = new ArrayList<>();
-	List<Fruit> fruits = new ArrayList<>();
-	List<Robot> robots = new ArrayList<>(); // robots from server
-	List<Robot> robots_to_allocate_fruits = new ArrayList<>(); // available robots
-	Robot robots_with_target[]; // busy robots
-
-	List<Fruit> list_fruit = new ArrayList<>(); // to know when new fruits come
+	private List<Fruit> available_fruits = new ArrayList<>();
+	private List<Fruit> fruits = new ArrayList<>();
+	private List<Robot> robots = new ArrayList<>(); // robots from server
+	private List<Robot> available_robots = new ArrayList<>(); // available robots
+	private List<Robot> busy_robots;
+	private List<Fruit> my_fruits; // to know when new fruits come
 
 	
 	
@@ -35,14 +35,11 @@ public class Plan_move_thread extends Thread {
 	this.graph_algo = new Graph_Algo();
 	this.graph_algo.init(game_mt.getGraph());
 
-	fruits.addAll(game_mt.getFruits());
-	available_fruits.addAll(fruits); // initialize list
-	list_fruit.addAll(fruits);
+	available_robots = new ArrayList<>();
+	available_robots.addAll(game_mt.getRobots());
+	busy_robots = new ArrayList<>();
+	my_fruits = new ArrayList<>();
 	
-	robots_to_allocate_fruits = new ArrayList<>();
-	robots_with_target = new Robot[game_mt.getRobots().size()];
-	for (int i=0; i<robots_with_target.length; i++) robots_with_target[i] = new Robot();
-
 	}
 
 	
@@ -51,171 +48,207 @@ public class Plan_move_thread extends Thread {
 		while(game_mt.service.isRunning()) {
 			try {
 				sleep(500);
+			}
+			 catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+				
 					robots.clear();
 					robots.addAll(game_mt.getRobots()); // refresh robot list
 					fruits.clear();
 					fruits.addAll(game_mt.getFruits()); // refresh fruit list
 					
-					// check for new fruits:
+					
+					////////////////////////////////////////////// UPDATE ROBOTS SRC & DEST from Server ////////////////////////////////
+					
+					for (int i=0; i<robots.size(); i++) {
+						for (int j = 0; j < busy_robots.size(); j++) {
+								if (busy_robots.get(j).getID() == robots.get(i).getID()) {
+									busy_robots.get(robots.get(j).getID()).setSrc(robots.get(i).getSrc());
+									busy_robots.get(robots.get(j).getID()).setDest(robots.get(i).getDest());
+								}
+							}
+						
+						for (int j = 0; j < available_robots.size(); j++) {
+							if (available_robots.get(j).getID() == robots.get(i).getID()) {
+								available_robots.get(robots.get(j).getID()).setSrc(robots.get(i).getSrc());
+								available_robots.get(robots.get(j).getID()).setDest(robots.get(i).getDest());
+								}
+							}
+						}
 					
 					
-					boolean changed = false;
-					for (int i = 0; i < fruits.size(); i++) {
+					////////////////////////////////////////////// UPDATE FRUIT LISTS //////////////////////////////////////////////////
+					for (int i = 0; i < fruits.size(); i++) { // check for new fruits and then add then to available fruit list:
+						boolean found = false;
 						Fruit current_fruit = fruits.get(i);
-						boolean exists = false;
-						for (int j = 0; j < list_fruit.size(); j++) {
-							if (current_fruit.getPos().x() == list_fruit.get(j).getPos().x() &&
-									current_fruit.getPos().y() == list_fruit.get(j).getPos().y()) {
-								exists = true;
-							}
+						for (int j = 0; j < my_fruits.size(); j++) {
+							if (current_fruit.getPos().x() == my_fruits.get(j).getPos().x() && 
+									current_fruit.getPos().y() == my_fruits.get(j).getPos().y()) found = true;
 						}
+						if (!found)  // not found = new fruit from server
+						{
+							System.out.println("NEW FRUIT! " + current_fruit.getPos().x() + "," + current_fruit.getPos().y() + "; At " + 
+									current_fruit.getEdge().getSrc() + "," + current_fruit.getEdge().getDest());
+							my_fruits.add(current_fruit);
+							available_fruits.add(current_fruit);
+						}
+					}
+					
+					for (int i = 0; i < my_fruits.size(); i++) { // remove old fruits
+						boolean found = false;
+						Fruit current_fruit = my_fruits.get(i);
+						for (int j = 0; j < fruits.size(); j++) {
+							if (current_fruit.getPos().x() == fruits.get(j).getPos().x() && 
+									current_fruit.getPos().y() == fruits.get(j).getPos().y()) found = true;
+						}
+						if (!found)  // not found = new fruit from server
+						{
+							System.out.println("REMOVED FRUIT " + current_fruit.getPos().x() + "," + current_fruit.getPos().y() + "; At " + 
+									current_fruit.getEdge().getSrc() + "," + current_fruit.getEdge().getDest());
+							my_fruits.remove(current_fruit);
+							available_fruits.remove(current_fruit); // just in case it still exists there
+						}
+					}
 
-						if (!exists) {
-							list_fruit.add(current_fruit);
-							available_fruits.add(current_fruit); // new fruit!
-							System.out.println("A new fruit has been added: " + current_fruit.getPos().x() + "," + current_fruit.getPos().y()+"."
-									+  ", available fruits: " + available_fruits.size());
-							changed = true;
-							
-						}
-					}
+					//////////////////////////////////// ALLOCATE FRUITS TO AVAILABLE ROBOTS ////////////////////////////////////////////////
 					
-					if (changed) { // remove redundant fruits from the list (old fruits)
-						for (int i = 0; i < list_fruit.size(); i++) {
-							boolean found = false;
-							for (int j = 0; j < fruits.size(); j++) {
-								if (list_fruit.get(i).getPos().x() == fruits.get(i).getPos().x() &&
-										list_fruit.get(i).getPos().y() == fruits.get(i).getPos().y()) {found = true;}
-							}
-							if (!found) {list_fruit.remove(i--);System.out.println("fruit #" + (i+1) +" has been removed"); }
-						}
-					}
-
-					for (int i = 0; i < robots.size(); i++) {
-						if (robots_with_target[i].getPath_to_target().size() == 0 && robots.get(i).getDest() == -1) { // find available robots 
-							robots_to_allocate_fruits.add(robots.get(i));
-							System.out.println("Robot #"+ i +" has just become available and has received a new target. (" + robots.get(i).getSrc() + "," + robots.get(i).getDest()+")");
-						} 
-					}
-					
-					// allocate a fruit to those robots:
-					
-					for (int i = 0; i < robots_to_allocate_fruits.size(); i++) {
+					for (int i = 0; i < available_robots.size(); i++) {
+						
 						Double min_distance = Double.MAX_VALUE;
 						Robot current_robot = null;
 						Fruit fruit_of_min_distance = null;
-						int index_of_fruit = -1;
+						Fruit closest_fruit = null;
+						if (available_robots.get(i).getDest() != -1) continue; // This robot should wait until his dest will be updated from server
 						
-						System.out.println("available_fruits: "+ available_fruits.size());
-						boolean isOpposite = false;
-						Fruit current_fruit = null;
-						
-						for (int j = 0; j < available_fruits.size() ; j++) {
-							current_robot = robots_to_allocate_fruits.get(i);
-							current_fruit = available_fruits.get(i);
-							available_fruits.get(j);
-							// to check if an edge is opposite:
+						for (int j = 0; j < available_fruits.size() ; j++) { // find the closest fruit and assign it to the available robot
+						 current_robot = available_robots.get(i);
+						 Fruit current_fruit = available_fruits.get(j);
 							
-							 isOpposite = false;
-							if (graph_algo.shortestPathDist(current_robot.getSrc(), 
-									game_mt.getGraph().getNode(current_fruit.getEdge().getDest()).getKey()) > 
-							graph_algo.shortestPathDist(current_robot.getSrc(), 
-									game_mt.getGraph().getNode(current_fruit.getEdge().getSrc()).getKey())) {isOpposite = true;}
-							
-
-							
+		
 							double distance_to_fruit = -1;
 							
-							
-							if (isOpposite && current_fruit.getType() == -1 || !isOpposite && current_fruit.getType() == 1) { 
-							distance_to_fruit = graph_algo.shortestPathDist(current_robot.getSrc(), 
-									game_mt.getGraph().getNode(current_fruit.getEdge().getDest()).getKey()) + current_fruit.getEdge().getWeight();
+							///////////// CONSIDER CONDITION 
+														
+							if (isEdgeOpposite(current_fruit, current_robot) && current_fruit.getType() == -1) { // banana
+									distance_to_fruit = graph_algo.shortestPathDist(current_robot.getSrc(), 
+										game_mt.getGraph().getNode(current_fruit.getEdge().getSrc()).getKey());
 							}
-							else if (isOpposite && current_fruit.getType() == 1 || !isOpposite && current_fruit.getType() == -1) { 
+							
+							else if (!isEdgeOpposite(current_fruit, current_robot) && current_fruit.getType() == 1) { // Opposite & apple
 								distance_to_fruit = graph_algo.shortestPathDist(current_robot.getSrc(), 
-										game_mt.getGraph().getNode(current_fruit.getEdge().getDest()).getKey()) + 2*current_fruit.getEdge().getWeight();
-								}
+										game_mt.getGraph().getNode(current_fruit.getEdge().getDest()).getKey());
+							}
+							
+							else if (!isEdgeOpposite(current_fruit, current_robot) && current_fruit.getType() == -1) { // Opposite & banana
+								distance_to_fruit = graph_algo.shortestPathDist(current_robot.getSrc(), 
+										game_mt.getGraph().getNode(current_fruit.getEdge().getDest()).getKey()) + (current_fruit.getEdge().getWeight());
+							}
+							
+							else if (isEdgeOpposite(current_fruit, current_robot) && current_fruit.getType() == 1) { // apple
+								distance_to_fruit = graph_algo.shortestPathDist(current_robot.getSrc(), 
+										game_mt.getGraph().getNode(current_fruit.getEdge().getSrc()).getKey()) + (current_fruit.getEdge().getWeight());
+							}
 							
 							
+							
+							System.out.println("j="+ j +" Fruit " + current_fruit.getEdge().getSrc() +"," + current_fruit.getEdge().getDest() + " distance: " + distance_to_fruit);
 							if (min_distance > distance_to_fruit) {
 								min_distance = distance_to_fruit;
 								fruit_of_min_distance = current_fruit;
-								index_of_fruit = j;
+								closest_fruit = current_fruit;
 								}
+						} // END j LOOP
 						
-						}
-						System.out.println("Robot " + i + " going to " + robots_to_allocate_fruits.get(i).getSrc()+ "," + fruit_of_min_distance.getEdge().getDest()+
-								". Target: ");
+						System.out.println("Robot " + i + " is going from " + available_robots.get(i).getSrc() + 
+								". Target: " + closest_fruit.getEdge().getSrc() + "," + closest_fruit.getEdge().getDest() + " (" + closest_fruit.getPos().x() + "," + closest_fruit.getPos().y()+")");
 						
-
 						Queue<node_data> l = null;
+						System.out.println("TYPE IS " +  closest_fruit.getType() + " IS OPPOSITE? " + isEdgeOpposite(fruit_of_min_distance, available_robots.get(i)) + " edge: " 
+								+ closest_fruit.getEdge().getSrc() + ", dest: " + closest_fruit.getEdge().getDest());
 						
-						if (isOpposite && current_fruit.getType() == -1 || !isOpposite && current_fruit.getType() == 1) { 
-							l = graph_algo.shortestPath(robots_to_allocate_fruits.get(i).getSrc(), fruit_of_min_distance.getEdge().getDest());
-							System.out.println("#### " + robots_to_allocate_fruits.get(i).getSrc() + "," + fruit_of_min_distance.getEdge().getDest());
+						if (isEdgeOpposite(fruit_of_min_distance, available_robots.get(i)) && closest_fruit.getType() == -1) {
+							l = graph_algo.shortestPath(available_robots.get(i).getSrc(), fruit_of_min_distance.getEdge().getDest());
+							l.add(game_mt.getGraph().getNode(fruit_of_min_distance.getEdge().getSrc()));
+						
+						} else if (isEdgeOpposite(fruit_of_min_distance, available_robots.get(i)) && closest_fruit.getType() == 1) {
+							l = graph_algo.shortestPath(available_robots.get(i).getSrc(), fruit_of_min_distance.getEdge().getDest());
+							l.add(game_mt.getGraph().getNode(fruit_of_min_distance.getEdge().getSrc()));
+							l.add(game_mt.getGraph().getNode(fruit_of_min_distance.getEdge().getDest()));
+							
+						} else if (!isEdgeOpposite(fruit_of_min_distance, available_robots.get(i)) && closest_fruit.getType() == -1) { // banana
+							l = graph_algo.shortestPath(available_robots.get(i).getSrc(), fruit_of_min_distance.getEdge().getSrc());
+							l.add(game_mt.getGraph().getNode(fruit_of_min_distance.getEdge().getDest()));
+							l.add(game_mt.getGraph().getNode(fruit_of_min_distance.getEdge().getSrc()));	
+							
+						} else if (!isEdgeOpposite(fruit_of_min_distance, available_robots.get(i)) && closest_fruit.getType() == 1) { // apple
+							l = graph_algo.shortestPath(available_robots.get(i).getSrc(), fruit_of_min_distance.getEdge().getSrc());
+							l.add(game_mt.getGraph().getNode(fruit_of_min_distance.getEdge().getDest()));
+							
 						}
-						else {
-							System.out.println("#### " + robots_to_allocate_fruits.get(i).getSrc() + "," + fruit_of_min_distance.getEdge().getSrc());
-							l = graph_algo.shortestPath(robots_to_allocate_fruits.get(i).getSrc(), fruit_of_min_distance.getEdge().getSrc());
-						}
 						
+						available_robots.remove(current_robot); // make the robot not available.
+						available_fruits.remove(closest_fruit); // make the fruit now available to others robots
 						
-						System.out.println("current robot: " + current_robot.getSrc());
-						Robot tmp = new Robot(current_robot.getID(), current_robot.getValue(),
-								current_robot.getSrc(), -1 , current_robot.getSpeed(), current_robot.getPos());
-						tmp.setPath_to_target(l);
-						
-						robots_with_target[current_robot.getID()] = tmp;
-						
-						robots_to_allocate_fruits.remove(i);
-						//targeted_fruits.add(available_fruits.get(index_of_fruit));
-						available_fruits.remove(index_of_fruit);
-					}
-					
-					
-					/// notify server of path
-					
-					System.out.println("Robot's position: "+ robots.get(0).getSrc() + "," + robots.get(0).getDest());
-					// כשהוא יאכל את הפרי נוסיףך אותאת הרובוט לרשימה של הרובוטים הפנויים
-					for (int i = 0; i < robots_with_target.length; i++) {
-						if (robots_with_target[i].getPath_to_target().size() > 0) {
-						//	System.out.println(robots.get(i).getDest() + "<===>" +  robots_with_target[i].getDest() + "@#@#");
-							if (robots.get(i).getDest() == -1 || robots_with_target[i].getDest() == -1) { // robot stands still
-								int node_to_pop = robots_with_target[i].getPath_to_target().poll().getKey();
-								game_mt.service.chooseNextEdge(robots_with_target[i].getID(), node_to_pop);
-								
-								robots_with_target[i].setSrc(robots.get(i).getSrc());
-								robots_with_target[i].setDest(node_to_pop);
-								System.out.println("popped: " + node_to_pop);
-							//	robots.get(i).getPath_to_target();
-							}
-						}
-					}
-					
-					
-					//
-					
-					
-					// print paths:
-					
-					for (Robot current_robot : robots_with_target) {
-						
+						current_robot.setPath_to_target(l); // assign the new path to the robot.
+						// print new path of the current robot:
+						System.out.println("NEW PATH TO ROBOT (" + current_robot.getID() + "): ");
 						for (node_data item : current_robot.getPath_to_target()) {
 							System.out.print(item.getKey() + "->");
 						}
 							System.out.println();
-
 						
-					}
-				
-				
+					
+						busy_robots.add(current_robot);
 
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-		}
-		
+					}
+
+					
+					//////////////////////////////////////////// ROBOTS NEXT MOVE ////////////////////////////////////
+					System.out.println("fruits graph:");
+					for (int j = 0; j < game_mt.getFruits().size(); j++) {
+						System.out.print("(" +game_mt.getFruits().get(j).getPos().x() + "," + game_mt.getFruits().get(j).getPos().y() +") ");
+					}
+					System.out.println();
+					
+					for (int i = 0; i < busy_robots.size() ; i++) {
+
+						Robot current_robot = busy_robots.get(i);
+							
+						if (!current_robot.getPath_to_target().isEmpty() && current_robot.getDest() == -1) {
+							int go_where = current_robot.getPath_to_target().poll().getKey();
+							System.out.println("popped " + go_where);
+							game_mt.service.chooseNextEdge(current_robot.getID(), go_where); // request a move
+							//System.out.println("ROBOT: " + current_robot.getSrc() + "," + current_robot.getSrc());
+
+						}
+						if (current_robot.getPath_to_target().isEmpty()) { // if the robot reached its destination then remove it from busy_robots and add it to available robots
+							busy_robots.remove(current_robot); 
+							available_robots.add(current_robot);
+							}
+					}
+	
+					//////////////////////////////////////////// END ROBOTS NEXT MOVE ////////////////////////////////////
+
+		} // end while
+	} // end method
+
+
+	/**
+	 * This method checks whether an edge which the robot is going towards to is opposite.
+	 * @param current_fruit
+	 * @param robot
+	 * @return
+	 */
+	private boolean isEdgeOpposite(Fruit current_fruit, Robot robot) {
+		boolean	closest_fruit_isEdgeOpposite = false;
+		if (graph_algo.shortestPathDist(robot.getSrc(), 
+				game_mt.getGraph().getNode(current_fruit.getEdge().getDest()).getKey()) < 
+					graph_algo.shortestPathDist(robot.getSrc(), 
+						game_mt.getGraph().getNode(current_fruit.getEdge().getSrc()).getKey())) {
+						closest_fruit_isEdgeOpposite = true;
+					}
+		return closest_fruit_isEdgeOpposite;
 	}
 	
 	

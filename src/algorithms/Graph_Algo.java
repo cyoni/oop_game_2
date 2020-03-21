@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
 
 import dataStructure.DGraph;
 import dataStructure.edge_data;
@@ -96,13 +98,24 @@ public class Graph_Algo implements graph_algorithms , Serializable{
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		double mat[][] = fw.getMat();
-		
 		return mat[src][dest];
 	}
 
 	@Override
-	public List<node_data> shortestPath(int src, int dest) {
-		return fw.getShortestPath(src, dest);
+	public Queue<node_data> shortestPath(int src, int dest) {
+	//	Stack<node_data> stack = new Stack<node_data>();
+		Queue<node_data> q = new LinkedList<node_data>();
+		List<node_data> list = fw.getShortestPath(src, dest);
+/*		
+		for(int i=list.size()-1; i>-1; i--) {
+			stack.push(list.get(i));
+		}*/
+		for (int i = 0; i < list.size(); i++) {
+			q.add(list.get(i));
+		}
+		
+		
+		return q;
 	}
 
 	@Override

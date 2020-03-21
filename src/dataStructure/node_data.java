@@ -24,16 +24,7 @@ public interface node_data {
 	 * @param p - new new location  (position) of this node.
 	 */
 	public void setLocation(Point3D p);
-	/**
-	 * Return the weight associated with this node.
-	 * @return
-	 */
-	public double getWeight();
-	/**
-	 * Allows changing this node's weight.
-	 * @param w - the new weight
-	 */
-	public void setWeight(double w);
+
 	/**
 	 * return the remark (meta data) associated with this node.
 	 * @return

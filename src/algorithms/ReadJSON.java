@@ -18,99 +18,16 @@ import dataStructure.node_data;
 import gui.Node_metadata;
 import items.Fruit;
 import items.Robot;
+import utils.Point3D;
 
 public class ReadJSON {
-	 JFrame f;
-	
+	JFrame f;
 	 
 	 public ReadJSON(JFrame f) {
 		 this.f = f;
+
 	 }
 	 
-	 /*
-	public  game_metadata ReadJson_graph(JFrame F, String jsonString, List<String> list_fruits, List<String> list_robots) {
-
-		if (jsonString.isEmpty()) return null;
-		 f = F;
-		
-		//game_metadata gmt = new game_metadata();
-		List<edge_data> Edges = new ArrayList<>();
-		List<node_data> Nodes = new ArrayList<>();
-		List<Fruit> fruits = new ArrayList<>();
-		try {
-				JSONObject obj = new JSONObject(jsonString);
-				JSONArray arr = obj.getJSONArray("Edges");
-				for (int i = 0; i < arr.length(); i++) // get data of Edges
-					{
-						int src = arr.getJSONObject(i).getInt(("src"));
-						double w = arr.getJSONObject(i).getDouble(("w"));
-						int dest = arr.getJSONObject(i).getInt(("dest"));
-						Edges.add(new edge_metadata(src, dest, w));
-					}
-				arr = obj.getJSONArray("Nodes"); // get data of Nodes
-				for (int i = 0; i < arr.length(); i++) // get data of Edges
-				{
-					String pos = arr.getJSONObject(i).getString(("pos"));
-					int id = arr.getJSONObject(i).getInt(("id"));	
-					String point[] = pos.split(",");
-					double x = Double.parseDouble(point[0]);
-					double y = Double.parseDouble(point[1]);
-					double z = Double.parseDouble(point[2]);
-					Nodes.add(new Node_metadata(id, new converter(f).coordsToPixel(y, x), z));
-					}
-				}
-			 catch (JSONException e) {
-					e.printStackTrace();
-				}
-		
-				graph g = new DGraph();
-				
-				for (int i = 0; i < Nodes.size(); i++) {
-					g.addNode(Nodes.get(i));
-				}
-				for (int i = 0; i < Edges.size(); i++) {
-					g.connect(Edges.get(i).getSrc(), Edges.get(i).getDest(), Edges.get(i).getWeight());
-				}
-				
-				/////////////////////////////////////////////// get fruits
-		JSONObject obj;
-		if (!list_fruits.isEmpty()) {
-		try {
-			for (String item : list_fruits) {
-			obj = new JSONObject(item.toString());
-			
-			double value = obj.getJSONObject("Fruit").getDouble("value");
-			int type = obj.getJSONObject("Fruit").getInt(("type"));	
-			String pos = obj.getJSONObject("Fruit").getString(("pos"));
-
-			String point[] = pos.split(",");
-			double x = Double.parseDouble(point[0]);
-			double y = Double.parseDouble(point[1]);
-			//double z = Double.parseDouble(point[2]);
-
-			fruits.add(new Fruit(value, type, new converter(f).coordsToPixel(y, x)));
-			}
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		}
-		
-		
-		////////////////////////////////////////////////// get Robots
-	
-			List<Robot> robots = new ArrayList<Robot>();
-				for (String robot : list_robots) {
-					robots.add(readRobot(robot));
-				}
-	
-		////////////////////////////////////////////////////			
-			return null;//new game_metadata(g, fruits, robots);
-	}*/
-
 	public  Robot readRobot(String robot) {
 		Robot r = null;
 		try {
@@ -129,11 +46,6 @@ public class ReadJSON {
 		
 			return r;
 	}
-	
-	
-	
-	
-	
 	
 
 	public  graph readGraph(String str_graph) { // reads nodes and edges
@@ -160,7 +72,7 @@ public class ReadJSON {
 					double x = Double.parseDouble(point[0]);
 					double y = Double.parseDouble(point[1]);
 					double z = Double.parseDouble(point[2]);
-					Nodes.add(new Node_metadata(id, new converter(f).coordsToPixel(y, x), z));
+					Nodes.add(new Node_metadata(id, new converter(f).coordsToPixel(y, x)));
 					}
 				}
 			 catch (JSONException e) {
@@ -180,7 +92,7 @@ public class ReadJSON {
 		return g;
 	}
 
-	public  List<Fruit> readFruits(List<String> str_fruits) {
+	public List<Fruit> readFruits(List<String> str_fruits, graph g) {
 			List<Fruit> fruits = new ArrayList<>();
 			JSONObject obj; 
 			if (!str_fruits.isEmpty()) {
@@ -196,8 +108,10 @@ public class ReadJSON {
 				double x = Double.parseDouble(point[0]);
 				double y = Double.parseDouble(point[1]);
 				//double z = Double.parseDouble(point[2]);
-	
-				fruits.add(new Fruit(value, type, new converter(f).coordsToPixel(y, x)));
+								
+				Fruit _fruit = new Fruit(value, type, new converter(f).coordsToPixel(y, x), g);
+				fruits.add(_fruit);
+				
 				}
 				
 			} catch (JSONException e) {

@@ -28,9 +28,9 @@ public class game_metadata{
 		this.game_graph = readJ.readGraph(service.getGraph());
 	}
 	
-	public List<Robot> getRobots() {return robots;};
-	public List<Fruit> getFruits() {return readJ.readFruits(service.getFruits());}
-	public graph getGraph() {return game_graph;}
+	public synchronized List<Robot> getRobots() {return robots;};
+	public synchronized List<Fruit> getFruits() {return readJ.readFruits(service.getFruits(), game_graph);}
+	public synchronized graph getGraph() {return game_graph;}
 
 	public void updateRobots(List<Robot> list_robots) {
 

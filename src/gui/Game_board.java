@@ -16,6 +16,7 @@ import Server.game_service;
 import algorithms.ReadJSON;
 import algorithms.converter;
 import algorithms.line;
+import algorithms.prim;
 import algorithms.split_string;
 import dataStructure.DGraph;
 import dataStructure.edge_data;
@@ -27,8 +28,11 @@ import items.Robot;
 import oop_dataStructure.OOP_DGraph;
 import oop_dataStructure.oop_edge_data;
 import oop_dataStructure.oop_graph;
-import threads.GameThread;
+import threads.Plan_move_thread;
+import threads.Refresh_screen_thread;
 import utils.Point3D;
+import utils.User_Dialog;
+
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class Game_board{
@@ -37,13 +41,13 @@ public class Game_board{
 	 game_metadata game_mt; // contains converted graph, list of fruits, robots
 	 private game_service game;
 	 OOP_DGraph game_graph;
-	 private List<GameThread> g_threads;
+	 private List<Refresh_screen_thread> g_threads;
 	 
 	public Game_board(MyGameGUI myGameGui , int stage) {Game_board.myGameGui = myGameGui; this.scenario_num = stage;  g_threads = new ArrayList<>();}
 	
 	// the server only displays fruits and animates the movement of the robot when the user selects a dest.
 	public void start_game() {
-		int scenario_num = 0;
+		int scenario_num = 23;
 		game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String graph_json = game.getGraph();
 		game_graph = new OOP_DGraph();
@@ -143,12 +147,16 @@ public class Game_board{
 		//moveRobots(game, game_graph);
 
 
+
 		
-		
-		GameThread thread = new GameThread(game_mt, myGameGui); // this thread updates the screen and the location of the robots.
+		Refresh_screen_thread thread = new Refresh_screen_thread(game_mt, myGameGui); // this thread updates the screen and the location of the robots.
+		Plan_move_thread mangement_thread = new Plan_move_thread(game_mt, myGameGui);
 		
 		thread.start();
-
+		mangement_thread.start();
+		
+		/*prim x = new prim(myGameGui);
+		x.primMST(game_mt.getGraph());*/
 	}
 
 	
@@ -280,7 +288,9 @@ public class Game_board{
 	public void getEdge(Point3D mouse_point) {
 		double _x = mouse_point.x();
 		double _y = mouse_point.y();		
-		System.out.println("mouse coords is: " + _x + "," + _y );
+
+		User_Dialog.showAlert(_x + "," + _y);
+		
 		graph g = game_mt.getGraph();
 		List<edge_data>[] x = g.getArrayOfVertciesWithEdges();
 		double min_distance = Double.MAX_VALUE;

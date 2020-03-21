@@ -14,15 +14,13 @@ public class Node_metadata implements node_data, Serializable {
 	 */
 	
 	private static final long serialVersionUID = -5098381326948746081L;
-	private double weight;
 	private Point3D location;
 	private String info;
 	private int key;
 
 	
-	public Node_metadata(int key, Point3D location, double weight) {
+	public Node_metadata(int key, Point3D location) {
 		this.location = location;
-		this.weight = weight;
 		this.key = key;		
 	}
 	
@@ -39,16 +37,6 @@ public class Node_metadata implements node_data, Serializable {
 	@Override
 	public void setLocation(Point3D p) {
 		this.location = p;
-	}
-
-	@Override
-	public double getWeight() {
-		return weight;
-	}
-
-	@Override
-	public void setWeight(double w) {
-		this.weight = w;
 	}
 
 	@Override

@@ -29,10 +29,28 @@ public class line {
 	 */
 	
 	public static boolean isIn(Point3D p1, Point3D p2,  Point3D point_to_check) {
+		// range check!
+		double maxX = 0;
+		double minX = 0;
+		if (p1.x() > p2.x()) { maxX = p1.x(); minX = p2.x();}
+			else {maxX = p2.x(); minX = p1.x();}
+		
+		double maxY = 0;
+		double minY = 0;
+		if (p1.y() > p2.y()) { maxY = p1.y(); minY = p2.y();}
+			else {maxY = p2.y(); minY = p1.y();}
+
 		double m = (p2.y()-p1.y())/(p2.x()-p1.x());
 		int expected = (int) point_to_check.y();
-		int result = (int) (m*point_to_check.x()+(-1)*m*p2.x()+ p2.y());
-		return expected-result < 10 && expected-result >= -2;	
+		int result = (int) (m*point_to_check.x()+(-1)*m*p2.x()+ p2.y());	
+
+		//System.out.println(p1.x() +"," + p1.y() +" " + p2.x() +"," + p2.y() +" " + point_to_check.x() +"," + point_to_check.y() +" rslt " + result);
+		
+		if (!(maxX >= point_to_check.x() && minX <= point_to_check.x() && maxY >= point_to_check.y() && minY <= point_to_check.y())) return false;
+		
+
+		
+		return expected-result < 9 && expected-result >= -25;	
 	}	
 	
 	/**

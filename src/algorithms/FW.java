@@ -34,22 +34,20 @@ public class FW implements Serializable{
 		mat = new double[g.nodeSize()][g.nodeSize()];
 		paths = new ArrayList[g.nodeSize()][g.nodeSize()];
 		for (double[] row : mat)  Arrays.fill(row, infinity);
+
+		List<edge_data> edges = g.getEdges();
 		
-		Collection<node_data> nodes = g.getV();	
-		// Initialize the mat with adjacent vertices 
-		for (node_data current_node : nodes) {
-			int i = current_node.getKey();
-			Collection<edge_data> edges = g.getE(i);
-			mat[i][i] = current_node.getWeight();
-			
-			if (edges == null) continue; // if there is no edges in some vertex (possible when the graph is not connected)
-			
-			for (edge_data current_edge : edges) {
-				int j = current_edge.getDest();
-				mat[i][j] = 2*current_edge.getWeight();
-			}
+		for (int i = 0; i < mat.length; i++) {
+			mat[i][i] = 0;
 		}
 		
+		for (int i = 0; i < edges.size(); i++) {
+			int src = edges.get(i).getSrc();
+			int dest = edges.get(i).getDest();
+			mat[src][dest] = edges.get(i).getWeight();
+			mat[dest][src] = edges.get(i).getWeight();
+		}
+
 		for (int i = 0; i < mat.length; i++) {
 			for (int j = 0; j < mat.length; j++) {
 				paths[i][j] = new ArrayList<>();
@@ -57,34 +55,15 @@ public class FW implements Serializable{
 			}
 		}
 		
-		// convert weights of vertices to edges
-		convertVertexToEdge();
+
 		// update the mat with FW
 		startFW();
-		// correct the mat with the weights of the vertices:
-		correctMatrix();
+		
 		printMat();
+
+		
 	}
 	
-	private void correctMatrix() {
-		for (int i = 0; i < mat.length; i++) {
-			for (int j = 0; j < mat.length; j++) {
-				
-				if (mat[i][j] != infinity && i != j) mat[i][j] = (mat[i][i] + mat[j][j] + mat[i][j]) / 2;
-				}
-			}		
-	}
-
-
-
-	private void convertVertexToEdge() {
-		for (int i = 0; i < mat.length; i++) {
-			for (int j = 0; j < mat.length; j++) {
-				if (mat[i][j] != infinity && i!=j)
-					mat[i][j] = mat[i][j] + mat[i][i] + mat[j][j];
-			}	
-		}		
-	}
 
 
 
@@ -125,7 +104,27 @@ public class FW implements Serializable{
 
 	public List<node_data> getShortestPath(int src, int dest) {
 		ArrayList<node_data> shortestPath = paths[src][dest];
-		return shortestPath; 
+		ArrayList<node_data> tmpPath = new ArrayList<>();
+		
+		for (int i = 0; i < shortestPath.size(); i++)  // deep copy
+			tmpPath.add(shortestPath.get(i));
+		
+		if (tmpPath.size() > 1) {
+	
+		
+			int last = tmpPath.get(0).getKey();
+			for (int i = 1; i < tmpPath.size(); i++) {
+				int current = tmpPath.get(i).getKey();
+				if (tmpPath.get(i).getKey() == last) {
+					tmpPath.remove(i--);
+				}
+				last = current;
+			}
+		}
+			
+		
+		
+		return tmpPath; 
 	}
 
 
@@ -161,11 +160,10 @@ public class FW implements Serializable{
 			mat[shorestPathList.get(j).getKey()][shorestPathList.get(j-1).getKey()] = 0;
 			mat[shorestPathList.get(j-1).getKey()][shorestPathList.get(j).getKey()] = 0;
 			}
-			convertVertexToEdge();
+
 			// update the mat with FW
 			startFW();
-			// correct the mat with the weights of the vertices:
-			correctMatrix();
+
 		}
 
 		return shortestPath_without_duplicates(list);

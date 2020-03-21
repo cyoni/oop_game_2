@@ -14,6 +14,7 @@ package algorithms;
 
 
 import java.util.List;
+import java.util.Queue;
 
 import dataStructure.graph;
 import dataStructure.node_data;
@@ -61,7 +62,7 @@ public interface graph_algorithms {
 	 * @param dest - end (target) node
 	 * @return
 	 */
-	public List<node_data> shortestPath(int src, int dest);
+	public Queue<node_data> shortestPath(int src, int dest);
 	/**
 	 * computes a relatively short path which visit each node in the targets List.
 	 * Note: this is NOT the classical traveling salesman problem, 

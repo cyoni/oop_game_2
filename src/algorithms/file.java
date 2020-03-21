@@ -96,7 +96,7 @@ public class file implements file_interface{
 				double z = Double.parseDouble(point[2]);
 				
 
-				Nodes.add(new Node_metadata(id, new converter(f).coordsToPixel(y, x), z));
+				Nodes.add(new Node_metadata(id, new converter(f).coordsToPixel(y, x)));
 			}
 		}
 		
