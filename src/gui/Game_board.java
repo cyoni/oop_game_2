@@ -16,7 +16,7 @@ import Server.game_service;
 import algorithms.ReadJSON;
 import algorithms.converter;
 import algorithms.line;
-import algorithms.prim;
+
 import algorithms.split_string;
 import dataStructure.DGraph;
 import dataStructure.edge_data;
@@ -64,20 +64,22 @@ public class Game_board{
 			Iterator<String> f_iter = game.getFruits().iterator();
 			System.out.println("fruits " + f_iter.toString());
 			//while(f_iter.hasNext()) {System.out.println(f_iter.next());}	
-				int src_node = 0;  // arbitrary node, you should start at one of the fruits
-			for(int a = 0;a<rs;a++) {
+			
+			int src_node = 20;  // arbitrary node, you should start at one of the fruits
+			
+			if (scenario_num == 23) {
+				game.addRobot(5);
+				game.addRobot(15);
+				game.addRobot(25);
+			}
+			else			
+			for(int a = 0; a < rs;a++) {
 				game.addRobot(src_node+a);
 				
 			}
 					
 			
 			game_mt = new game_metadata(myGameGui, game);
-			//game_mt = ReadJSON.ReadJson_graph(myGameGui.f, graph_json, game.getFruits()
-				//	, game.getRobots());
-			
-			//drawObjects();
-		//	drawGraph();
-			//drawRobots();
 
 			
 		}
