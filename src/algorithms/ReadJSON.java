@@ -15,16 +15,17 @@ import dataStructure.edge_metadata;
 import dataStructure.game_metadata;
 import dataStructure.graph;
 import dataStructure.node_data;
+import gui.Todelete;
 import gui.Node_metadata;
 import items.Fruit;
 import items.Robot;
 import utils.Point3D;
 
 public class ReadJSON {
-	JFrame f;
+	Point3D f;
 	 
-	 public ReadJSON(JFrame f) {
-		 this.f = f;
+	 public ReadJSON(Point3D measures) {
+		 this.f = measures;
 
 	 }
 	 

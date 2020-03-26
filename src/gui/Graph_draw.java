@@ -17,6 +17,7 @@ import dataStructure.edge_data;
 import dataStructure.graph;
 import dataStructure.node_data;
 import utils.Point3D;
+import utils.StdDraw;
 
 	/**
 	* This class draws graphs.
@@ -24,9 +25,9 @@ import utils.Point3D;
 	*/
 
 public class Graph_draw {
-	MyGameGUI g;
+	
 	 
-	public Graph_draw(MyGameGUI g) {this.g = g;}
+	public Graph_draw() {}
 	
 
 	public void draw(graph myGraph)  {
@@ -47,13 +48,13 @@ public class Graph_draw {
 			double y = currnet_node.getLocation().y();
 			
 			// draw the first point of the edge
-			g.setPenColor(g.BLUE);
-			g.setPenRadius(0.02);
-			g.point(x,y);
+			StdDraw.setPenColor(StdDraw.BLUE);
+			StdDraw.setPenRadius(0.02);
+			StdDraw.point(x,y);
 			
 			// write the weight of the point
-			g.setPenColor(g.BLUE);
-			g.text(x, y+30, currnet_node.getKey()+""); 
+			StdDraw.setPenColor(StdDraw.BLUE);
+			StdDraw.text(x, y+30, currnet_node.getKey()+""); 
 			
 			// get edges of the specific point
 			 Collection<edge_data> edges_for_this_node = myGraph.getE(i.getKey());
@@ -65,9 +66,9 @@ public class Graph_draw {
 
 					Point3D loc = line.getPointOnLine(i.getLocation(), node_dest.getLocation(), 90); // draw a small dot to the edge you're going to
 
-					g.setPenColor(g.YELLOW);
-					g.setPenRadius(0.015);
-					g.point(loc.x(), loc.y());
+					StdDraw.setPenColor(StdDraw.YELLOW);
+					StdDraw.setPenRadius(0.015);
+					StdDraw.point(loc.x(), loc.y());
 					
 					if (tmp_graph[i.getKey()].contains(dest)) 	continue;
 					
@@ -81,17 +82,17 @@ public class Graph_draw {
 					//point(x2,y2);
 					
 					// draw the edge
-					g.setPenRadius(0.001);
-					g.setPenColor(g.BLACK);
-					g.line(x, y, node_dest.getLocation().x(), node_dest.getLocation().y());
+					StdDraw.setPenRadius(0.001);
+					StdDraw.setPenColor(StdDraw.BLACK);
+					StdDraw.line(x, y, node_dest.getLocation().x(), node_dest.getLocation().y());
 	
 					
 					// write the weights
 					//setPenColor(BLUE);
-					g.setPenColor(g.GRAY);
+					StdDraw.setPenColor(StdDraw.GRAY);
 					
-					g.text((x+node_dest.getLocation().x())/2, (y+node_dest.getLocation().y())/2 +1, String.format("%.1f", edge_weight));
-					g.setPenColor(g.BLUE);
+					StdDraw.text((x+node_dest.getLocation().x())/2, (y+node_dest.getLocation().y())/2 +1, String.format("%.1f", edge_weight));
+					StdDraw.setPenColor(StdDraw.BLUE);
 
 					tmp_graph[i.getKey()].add(dest);
 					tmp_graph[dest].add(i.getKey());

@@ -10,7 +10,7 @@ import algorithms.converter;
 import dataStructure.game_metadata;
 import dataStructure.node_data;
 import gui.Game_board;
-import gui.MyGameGUI;
+import gui.Todelete;
 import items.Fruit;
 import items.Robot;
 import sun.util.calendar.CalendarUtils;
@@ -18,7 +18,6 @@ import sun.util.calendar.CalendarUtils;
 public class Plan_move_thread extends Thread {
 	
 	private Graph_Algo graph_algo;
-	private MyGameGUI gameGui;
 	private game_metadata game_mt;
 	private List<Fruit> available_fruits = new ArrayList<>();
 	private List<Fruit> fruits = new ArrayList<>();
@@ -29,9 +28,9 @@ public class Plan_move_thread extends Thread {
 
 	
 	
-	public Plan_move_thread(game_metadata game_mt, MyGameGUI gameGui) {
+	public Plan_move_thread(game_metadata game_mt) {
 	this.game_mt = game_mt;
-	this.gameGui = gameGui;
+
 	this.graph_algo = new Graph_Algo();
 	this.graph_algo.init(game_mt.getGraph());
 
@@ -160,8 +159,8 @@ public class Plan_move_thread extends Thread {
 								}
 						} // END j LOOP
 						
-						System.out.println("Robot " + i + " is going from " + available_robots.get(i).getSrc() + 
-								". Target: " + closest_fruit.getEdge().getSrc() + "," + closest_fruit.getEdge().getDest() + " (" + closest_fruit.getPos().x() + "," + closest_fruit.getPos().y()+")");
+				//		System.out.println("Robot " + i + " is going from " + available_robots.get(i).getSrc() + 
+				//				". Target: " + closest_fruit.getEdge().getSrc() + "," + closest_fruit.getEdge().getDest() + " (" + closest_fruit.getPos().x() + "," + closest_fruit.getPos().y()+")");
 						
 						Queue<node_data> l = null;
 						System.out.println("TYPE IS " +  closest_fruit.getType() + " IS OPPOSITE? " + isEdgeOpposite(fruit_of_min_distance, available_robots.get(i)) + " edge: " 

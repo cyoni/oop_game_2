@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,23 +32,24 @@ import oop_dataStructure.oop_graph;
 import threads.Plan_move_thread;
 import threads.Refresh_screen_thread;
 import utils.Point3D;
+import utils.StdDraw;
 import utils.User_Dialog;
 
-import static javax.swing.JOptionPane.showMessageDialog;
 
 public class Game_board{
 	 int scenario_num;
-	static MyGameGUI myGameGui;
+	//static MyGameGUI myGameGui;
 	 game_metadata game_mt; // contains converted graph, list of fruits, robots
 	 private game_service game;
 	 OOP_DGraph game_graph;
-	 private List<Refresh_screen_thread> g_threads;
+	 private static Point3D measures;
 	 
-	public Game_board(MyGameGUI myGameGui , int stage) {Game_board.myGameGui = myGameGui; this.scenario_num = stage;  g_threads = new ArrayList<>();}
+	public Game_board(int stage) {
+		this.scenario_num = stage; 
+		}
 	
 	// the server only displays fruits and animates the movement of the robot when the user selects a dest.
 	public void start_game() {
-		int scenario_num = 23;
 		game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String graph_json = game.getGraph();
 		game_graph = new OOP_DGraph();
@@ -76,12 +78,8 @@ public class Game_board{
 			for(int a = 0; a < rs;a++) {
 				game.addRobot(src_node+a);
 				
-			}
-					
-			
-			game_mt = new game_metadata(myGameGui, game);
-
-			
+			}	
+			game_mt = new game_metadata(measures, game);			
 		}
 		catch (JSONException e) {e.printStackTrace();}
 		game.startGame();
@@ -99,72 +97,21 @@ public class Game_board{
 	}
 
 
-	private void drawGraph() {
 
-	}
-
-
-	private void drawRobots() {
-
-/*		List<String> robots = game.getRobots();
-		
-		for (int i = 0; i < robots.size(); i++) {
-		Robot r = ReadJSON.readRobot(robots.get(i));
-		
-		myGameGui.picture(r.getPos().x(), r.getPos().y() , "robot.png", 30,60);
-		}
-		*/
-	}
-
-
-/*	private Fruit readFruit(String data) {
-		try {
-		JSONObject line = new JSONObject(data);
-		JSONObject t = line.getJSONObject("Fruit");
-		
-
-		double value = t.getDouble("value");
-		int type = t.getInt(("type"));	
-		String pos = t.getString(("pos"));
-
-		String point[] = pos.split(",");
-		double x = Double.parseDouble(point[0]);
-		double y = Double.parseDouble(point[1]);
-		//double z = Double.parseDouble(point[2]);
-
-		return (new Fruit(value, type, new converter(myGameGui.f).coordsToPixel(y, x)));
-
-		}
-		catch(Exception c){System.out.println(c);	}
-
-		
-		
-		return null;
-	}
-*/
-	
 	
 	public void manualVersion() {
 		
-		//moveRobots(game, game_graph);
-
-
-
-		
-		Refresh_screen_thread thread = new Refresh_screen_thread(game_mt, myGameGui); // this thread updates the screen and the location of the robots.
-		Plan_move_thread mangement_thread = new Plan_move_thread(game_mt, myGameGui);
+	
+		Refresh_screen_thread thread = new Refresh_screen_thread(game_mt, measures); // this thread updates the screen and the location of the robots.
+		Plan_move_thread mangement_thread = new Plan_move_thread(game_mt);
 		
 		thread.start();
 		mangement_thread.start();
 		
-		/*prim x = new prim(myGameGui);
-		x.primMST(game_mt.getGraph());*/
 	}
 
 	
 	public void automaticVersion() {
-		
-		
 		
 		
 	}
@@ -190,8 +137,8 @@ public class Game_board{
 					int dest = ttt.getInt("dest");
 					String pos = ttt.getString("pos");
 					
-					Point3D p = split_string.get_pos_frm_str_and_convert(myGameGui.f, pos);
-					  myGameGui.picture(p.x(), p.y() , "robot.png", 30,60);
+					Point3D p = split_string.get_pos_frm_str_and_convert(measures, pos);
+					StdDraw.picture(p.x(), p.y() , "robot.png", 30,60);
 					  
 					  
 					if(dest==-1) { // when a robot reached a node - choose its next move.
@@ -230,10 +177,22 @@ public class Game_board{
 
 	
 	
-	public void getItems() {
-			start_game();
+	public void start() {
+		start_game();
 	}
-
+	
+	public Point3D  getMeasures() {
+		return measures;
+	}
+	
+	public void initiate() {
+		 measures = new Point3D(1200, 600);; 
+		 StdDraw.setCanvasSize((int)measures.x(), (int)measures.y());
+		 StdDraw.setXscale(0, 1300);
+		 StdDraw.setYscale(-200, 800);
+		 StdDraw.setFont(new Font("Arial", 10, 15));		
+		
+	}
 	/**
 	 * this methods sets the number of robots that the user is asked to deploy on the map.
 	 * @param num_of_robots
@@ -246,33 +205,8 @@ public class Game_board{
 			
 			//game_mt.addRobot(game_mt.getGraph().getNode(0).getKey());
 			
-			myGameGui.picture(game_mt.getGraph().getNode(i).getLocation().x(), game_mt.getGraph().getNode(i).getLocation().y() , "robot.png", 30,60);
-
+			StdDraw.picture(game_mt.getGraph().getNode(i).getLocation().x(), game_mt.getGraph().getNode(i).getLocation().y() , "robot.png", 30,60);
 			game.addRobot(i);
-		/*	try {
-			JSONObject line = new JSONObject(game.getRobots().get(i));
-			JSONObject ttt = line.getJSONObject("Robot");
-			String pos = ttt.getString("pos");
-
-			String point[] = pos.split(",");
-			double x = Double.parseDouble(point[0]);
-			double y = Double.parseDouble(point[1]);
-			double z = Double.parseDouble(point[2]);
-			
-			Robot r = new Robot(new converter(myGameGui.f).coordsToPixel(y, x));
-			game_mt.addRobot(r);
-			
-			myGameGui.picture(r.getPos().x(),r.getPos().y() , "robot.png", 30,60);
-
-			game.addRobot(0);
-			
-			System.out.println("ok");
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
-			
-			
 			
 		}
 		

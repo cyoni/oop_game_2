@@ -12,11 +12,11 @@ public  class converter{
 	double xBottom =  32.101067;
 	double yBottom =  35.184181;
  //
-	private JFrame f;
+	private Point3D f;
 		
 	
-	public converter(JFrame f) {
-		this.f = f;
+	public converter(Point3D f2) {
+		this.f = f2;
 	}
 
 	/**
@@ -25,9 +25,9 @@ public  class converter{
 	* @return coordinate
 	**/
 	public Point3D coordsToPixel(double x, double y) {
-		int x1 = (int) ((-f.getHeight()*x+f.getHeight()*xBottom+f.getHeight()*xTop-f.getHeight()*xBottom)/(xTop-xBottom));
-		int y1 = (int) ((f.getWidth()*y - f.getWidth()*yBottom)/(yTop-yBottom));
-		return new Point3D(y1, f.getHeight()-x1, 0);
+		int x1 = (int) ((-f.y()*x+f.y()*xBottom+f.y()*xTop-f.y()*xBottom)/(xTop-xBottom));
+		int y1 = (int) ((f.x()*y - f.x()*yBottom)/(yTop-yBottom));
+		return new Point3D(y1, f.y()-x1, 0);
 	}
 
 	
@@ -37,8 +37,8 @@ public  class converter{
 	* @return coordinate
 	**/
 	public Point3D pixelToCoords(double x, double y) {
-		double x1 = (((f.getHeight()*xBottom) + (f.getHeight()-y)*(xTop-xBottom)) / f.getHeight());
-		double y1 = (((f.getWidth()*yBottom) + x*(yTop-yBottom)) / f.getWidth());
+		double x1 = (((f.y()*xBottom) + (f.y()-y)*(xTop-xBottom)) / f.y());
+		double y1 = (((f.x()*yBottom) + x*(yTop-yBottom)) / f.x());
 		return new Point3D(x1, y1, 0);
 	}
 

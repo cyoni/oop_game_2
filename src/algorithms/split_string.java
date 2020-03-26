@@ -7,7 +7,7 @@ import utils.Point3D;
 public class split_string {
 
 	
-	public static Point3D get_pos_frm_str_and_convert(JFrame f, String pos) {
+	public static Point3D get_pos_frm_str_and_convert(Point3D f, String pos) {
 		
 		String point[] = pos.split(",");
 		double x = Double.parseDouble(point[0]);
@@ -16,4 +16,6 @@ public class split_string {
 		
 		return new converter(f).coordsToPixel(y, x);
 	}
+
+
 }

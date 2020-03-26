@@ -16,7 +16,7 @@ import dataStructure.graph;
 import dataStructure.node_data;
 import gui.Game_board;
 import gui.Graph_draw;
-import gui.MyGameGUI;
+import gui.Todelete;
 import items.Fruit;
 import items.Robot;
 import oop_dataStructure.OOP_DGraph;
@@ -31,12 +31,13 @@ import utils.StdDraw;
  */
 public class Refresh_screen_thread extends Thread{
 	
-	private MyGameGUI gameGui;
+
+	private Point3D measures;
 	private game_metadata game_mt;
 	
-	public Refresh_screen_thread(game_metadata game_mt, MyGameGUI gameGui) {
+	public Refresh_screen_thread(game_metadata game_mt, Point3D measures) {
 	this.game_mt = game_mt;
-	this.gameGui = gameGui;
+	this.measures = measures;
 	refresh();
 	}
 		
@@ -45,53 +46,9 @@ public class Refresh_screen_thread extends Thread{
 			try {
 				while (game_mt.service.isRunning()) {
 					sleep(10);
-					
-					gameGui.enableDoubleBuffering();					
+					StdDraw.enableDoubleBuffering();					
 					refresh();
 				}
-
-		/*		System.out.println("Thread ID " + getId() + " started!");
-			while (game.isRunning()) {
-				sleep(10);
-				gameGui.enableDoubleBuffering();
-
-				boolean flag = true;
-				List<String> log = game.move();
-				if(log != null) {
-					long t = game.timeToEnd();
-					for(int i=0;i<log.size() && flag;i++) {
-						String robot_json = log.get(i);
-						System.out.println(robot_json);
-						Robot game_robot = ReadJSON.readRobot(robot_json);
-						
-						if (game_robot.getID() == getRobot().getID()) {
-							flag = false;
-									
-							//gameGui.clear();
-
-							game_board.drawObjects();
-							updateRobot(game_robot);
-
-
-							
-							//gameGui.picture(game_robot.getPos().x(), game_robot.getPos().y() , "robot.png", 30,60);
-							
-							gameGui.setPenColor(gameGui.ORANGE);
-							gameGui.setPenRadius(0.04);
-							gameGui.point(getRobot().getPos().x(), getRobot().getPos().y());
-							gameGui.pause(50);
-							
-							gameGui.show();
-							if (getRobot().getDest() == -1) {} // go to sleep until the user chooses an edge.
-								else { //the specific robot is on a node.	
-	
-									System.out.println("Turn to node: "+ getRobot().getDest() +"  time to end:"+(t/1000) + " dest: " + game_robot.getDest());
-								
-								}
-							}
-						}
-					}
-				}*/
 			}
 			
 			catch (Exception e) {
@@ -100,11 +57,11 @@ public class Refresh_screen_thread extends Thread{
 
 	}
 
-	
 	private void refresh() {
 		// refresh background picture
-		gameGui.picture(600, 500, "background.png", 1200, 1200);
-
+		StdDraw.clear();
+		//gameGui.picture(600, 500, "background.png", 1200, 1200);
+		
 		
 		
 		boolean flag = true;
@@ -117,7 +74,7 @@ public class Refresh_screen_thread extends Thread{
 			
 			// refresh graph:
 			
-			Graph_draw gd = new Graph_draw(gameGui);
+			Graph_draw gd = new Graph_draw();
 			gd.draw(game_mt.getGraph());
 			
 			// refresh fruits:
@@ -132,7 +89,7 @@ public class Refresh_screen_thread extends Thread{
 				String robot_json = log.get(i);
 				//System.out.println(robot_json);
 				
-				ReadJSON rj = new ReadJSON(gameGui.f);
+				ReadJSON rj = new ReadJSON(measures);
 				Robot robot = rj.readRobot(robot_json);
 				list_robots.add(robot);
 				
@@ -140,29 +97,12 @@ public class Refresh_screen_thread extends Thread{
 				game_mt.updateRobots(list_robots);
 				
 				
-				gameGui.setPenColor(gameGui.ORANGE);
-				gameGui.setPenRadius(0.04);
-				gameGui.point(robot.getPos().x(), robot.getPos().y());
+				StdDraw.setPenColor(StdDraw.ORANGE);
+				StdDraw.setPenRadius(0.04);
+				StdDraw.point(robot.getPos().x(), robot.getPos().y());
 			}
 		
-			
-
-			
-			
-		//	game_board.drawObjects();
-			/*
-			updateRobot(game_robot);
-
-
-			
-			//gameGui.picture(game_robot.getPos().x(), game_robot.getPos().y() , "robot.png", 30,60);
-			
-			gameGui.setPenColor(gameGui.ORANGE);
-			gameGui.setPenRadius(0.04);
-			gameGui.point(getRobot().getPos().x(), getRobot().getPos().y());
-			gameGui.pause(50);*/
-
-			gameGui.show();
+			StdDraw.show();
 		
 		}
 	}
@@ -181,100 +121,16 @@ public class Refresh_screen_thread extends Thread{
 			for (Fruit current_fruit : fruits) {
 			
 					if(current_fruit.getType() == -1) {
-						gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "banana.png", 30,60, 60);
+						StdDraw.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "banana.png", 30,60, 60);
 					}
 					else {
-						gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "apple.png", 30,60);
+						StdDraw.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "apple.png", 30,60);
 
 						}
 			}
 
-			
-			
-		/*	for (int i=0; i < tmp_fruit_list.size(); i++) {
-				Fruit current_fruit = tmp_fruit_list.get(i);
-				
-				flag = true;
-						
-				for (int j = 0; j < array_of_graph.length && flag; j++) {
-					for (int k = 0; k < array_of_graph[j].size() && flag; k++) {
-						int dest = array_of_graph[j].get(k).getDest();
-						Point3D pos = game_mt.getGraph().getNode(dest).getLocation();
-
-						if (line.isIn(game_mt.getGraph().getNode(j).getLocation(), pos, current_fruit.getPos())) {
-							tmp_fruit_list.remove(current_fruit); i--;
-							flag = false;
-
-							if (game_mt.getGraph().getNode(j).getLocation().y() > game_mt.getGraph().getNode(dest).getLocation().y()) {
-							gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "apple.png", 30,60);
-						//	System.out.println(current_fruit.getPos().x() + "," + current_fruit.getPos().y());
-							}
-							else {
-								gameGui.picture(current_fruit.getPos().x(), current_fruit.getPos().y() , "banana.png", 30,60, 60);						}
-						}
-					}
-				}
-
-			}*/
+	
 	}
-		
-	/*		System.out.println("--");
-			System.out.println(game_mt.g.getNode(12).getLocation().x() + "," + game_mt.g.getNode(12).getLocation().y() + " = 12->13");
-			System.out.println(game_mt.g.getNode(13).getLocation().x() + "," + game_mt.g.getNode(13).getLocation().y() + " = 13->13");
-			System.out.println(tmp_fruit_list.get(0).getPos().x() + "," + tmp_fruit_list.get(0).getPos().y() + " fruit");
-			for (int i = 0; i < tmp_fruit_list.size(); i++) {
-				
-				System.out.println(tmp_fruit_list.get(i).getPos().x() + " - " + tmp_fruit_list.get(i).getPos().y() + " i=" + i);	
-			}
-			
-			line.isIn(game_mt.g.getNode(12).getLocation(), game_mt.g.getNode(13).getLocation(), tmp_fruit_list.get(0).getPos());
-			
-			*/
-			
-			
 
-		
-		
-
-
-/*	*//**
-	 * update the robot that the server sends
-	 * @param robot
-	 *//*
-	private void updateRobot(Robot robot) {
-		getRobot().setDest(robot.getDest());
-		getRobot().setPos(robot.getPos());
-		getRobot().setSpeed(robot.getSpeed());
-		getRobot().setSrc(robot.getSrc());
-		getRobot().setValue(robot.getValue());
-	}*/
-
-
-
-/*	public Robot getRobot() {
-		return null;
-	}*/
-	
-
-/*	*//**
-	 * This method gets an edge when the user clicks on the screen.
-	 * The method looks if the robot has a connection to the adjacent node. 
-	 * If so, the thread will wake up.
-	 * @param edge
-	 *//*
-	public void edge_broadcast(edge_data edge) {
-		if (getRobot().getDest() == -1) {			
-			int target = -1;			
-			if (game_mt.getGraph().getEdge(getRobot().getSrc(), edge.getSrc()) != null  && edge.getDest() == getRobot().getSrc()|| 
-				game_mt.getGraph().getEdge(getRobot().getSrc(), edge.getDest()) != null && edge.getSrc() == getRobot().getSrc()) {
-				if (edge.getSrc() == getRobot().getSrc()) target = edge.getDest();
-				else target = edge.getSrc();
-				getRobot().setDest(target); 
-				game.chooseNextEdge(getRobot().getID(), target);
-				this.notify();
-			}
-		}
-	}*/
-	
 	
 }

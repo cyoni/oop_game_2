@@ -89,10 +89,12 @@ import javax.swing.KeyStroke;
 
 
 //
-public class MyGameGUI implements ActionListener, MouseListener, MouseMotionListener, KeyListener  {
+public class Todelete implements ActionListener, MouseListener, MouseMotionListener, KeyListener  {
+
 	
 	public file _file;
-	public JFrame f;
+	public static Point3D measures  = new Point3D(1200, 600);; 
+	//public JFrame f;
 	public Game_board gb;
 	private static JMenuItem menuItem_start_new_game,  menuItem_manual_game, menuItem_automatic_game;
 
@@ -230,7 +232,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	private static Graphics2D offscreen, onscreen;
 
 	// singleton for callbacks: avoids generation of extra .class files
-	private static MyGameGUI std = new MyGameGUI();
+	private static Todelete std = new Todelete();
 
 	// the frame for drawing to the screen
 	protected static JFrame frame;
@@ -594,7 +596,7 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	 */
 	public static void setFont(Font font) {
 		if (font == null) throw new IllegalArgumentException();
-		MyGameGUI.font = font;
+		Todelete.font = font;
 	}
 
 
@@ -925,14 +927,14 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 
 		// in case file is inside a .jar (classpath relative to StdDraw)
 		if ((icon == null) || (icon.getImageLoadStatus() != MediaTracker.COMPLETE)) {
-			URL url = MyGameGUI.class.getResource(filename);
+			URL url = Todelete.class.getResource(filename);
 			if (url != null)
 				icon = new ImageIcon(url);
 		}
 
 		// in case file is inside a .jar (classpath relative to root of jar)
 		if ((icon == null) || (icon.getImageLoadStatus() != MediaTracker.COMPLETE)) {
-			URL url = MyGameGUI.class.getResource("/" + filename);
+			URL url = Todelete.class.getResource("/" + filename);
 			if (url == null) throw new IllegalArgumentException("image " + filename + " not found");
 			icon = new ImageIcon(url);
 		}
@@ -1400,8 +1402,8 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	@Override
 	public void mousePressed(MouseEvent e) {
 		synchronized (mouseLock) {
-			mouseX = MyGameGUI.userX(e.getX());
-			mouseY = MyGameGUI.userY(e.getY());
+			mouseX = Todelete.userX(e.getX());
+			mouseY = Todelete.userY(e.getY());
 			isMousePressed = true;
 		}
 	}
@@ -1422,8 +1424,8 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	@Override
 	public void mouseDragged(MouseEvent e)  {
 		synchronized (mouseLock) {
-			mouseX = MyGameGUI.userX(e.getX());
-			mouseY = MyGameGUI.userY(e.getY());
+			mouseX = Todelete.userX(e.getX());
+			mouseY = Todelete.userY(e.getY());
 		}
 	}
 
@@ -1433,8 +1435,8 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		synchronized (mouseLock) {
-			mouseX = MyGameGUI.userX(e.getX());
-			mouseY = MyGameGUI.userY(e.getY());
+			mouseX = Todelete.userX(e.getX());
+			mouseY = Todelete.userY(e.getY());
 		}
 	}
 
@@ -1526,84 +1528,34 @@ public class MyGameGUI implements ActionListener, MouseListener, MouseMotionList
 		}
 	}
 
-
 	
-	///
+	private Todelete(){ // constructor
+		int xx = (int) measures.x();
+		int yy = (int) measures.y();
 	
-	private MyGameGUI(){ // constructor
-		
-	
-		setCanvasSize(1400, 600);
-		setScale(0, 1100);
+		setCanvasSize(xx, yy);
+		setXscale(0, 1300);
+		setYscale(-200, 800);
 		setFont(new Font("Arial", 10, 15));		
 		loadGame();
 	}
 	
-
-	   public static void main(String[] args) {
-		  // MyGameGUI x = new MyGameGUI();
-		  // x.loadGame();
-	   }
-
-
+public static void main(String[] args) {
+	
+}
 	private void loadGame() {
 		// TODO Auto-generated method stub
 		
 		start_mouse_listener();
-		ImageIcon icon = new ImageIcon("background.png");
-	    Image image = icon.getImage();
-	    JPanel panel1 = new JPanel() {
-	        @Override
-	        protected void paintComponent(Graphics g) {
-	            super.paintComponent(g);
-	            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-	        }
-	        
-	        @Override
-	        public Dimension getPreferredSize() {
-	            return new Dimension(1000, 800);
-	        }
-	    };
-	    f = new JFrame("Game");
-/*	    
-	    
-	*/
-	    
-	    // FOR DEVELOPMENT PURPOSES ONLY
-	    
-	    f.add((panel1),BorderLayout.CENTER);
-	    f.pack();
-	    f.setLocationRelativeTo(null); // open the window in the middle
-	    //f.setVisible(true);
 
-		//_file = new file(f);
-	   // _file.setLocation("C:\\Users\\Yoni\\git\\oop_game_2\\data\\A0");
-	  //  graph g = _file.processFile();
-	    
-	    
-	   
-	    
 	    int stage = 1;
 	    gb = new Game_board(this, stage);
 	    gb.getItems();
-	    
-	    //   setScale(-2, +2);
-	     //  enableDoubleBuffering();
-	    
-/*	       for (double t = 0.0; true; t += 0.01) {
-	           double x = Math.sin(t);
-	           double y = Math.sin(t);
-	           clear();
-	           filledCircle(x, y, 0.05);
-	           filledCircle(-x, -y, 0.05);
-	           show();
-	           pause(20);
-	       }*/
-	    
-	    
+
+
 	}
 	
-
+//TODO: 1. replace this class with sdtDraw and have a better strategic 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

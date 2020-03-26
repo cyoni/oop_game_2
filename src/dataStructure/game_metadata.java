@@ -5,9 +5,10 @@ import java.util.List;
 
 import Server.game_service;
 import algorithms.ReadJSON;
-import gui.MyGameGUI;
+import gui.Todelete;
 import items.Fruit;
 import items.Robot;
+import utils.Point3D;
 
 /**
 * This class contains an object of nodes, edges, fruits
@@ -21,34 +22,20 @@ public class game_metadata{
 	private List<Robot> robots;
 	private graph game_graph;
 	
-	public game_metadata(MyGameGUI gameGui, game_service game) {
+	public game_metadata(Point3D measures, game_service game) {
 		this.service = game;
-		readJ = new ReadJSON(gameGui.f);
+		readJ = new ReadJSON(measures);
 		robots = readJ.readRobots(service.getRobots());
 		this.game_graph = readJ.readGraph(service.getGraph());
 	}
 	
-	public synchronized List<Robot> getRobots() {return robots;};
-	public synchronized List<Fruit> getFruits() {return readJ.readFruits(service.getFruits(), game_graph);}
-	public synchronized graph getGraph() {return game_graph;}
+	public List<Robot> getRobots() {return robots;};
+	public List<Fruit> getFruits() {return readJ.readFruits(service.getFruits(), game_graph);}
+	public graph getGraph() {return game_graph;}
 
 	public void updateRobots(List<Robot> list_robots) {
-
 		robots.clear();
 		robots.addAll(list_robots);
-		
-		
-		
-		/*for (Robot robot : list_robots) {*/
-/*			robot.setDest(robot.getDest());
-			getRobot().setPos(robot.getPos());
-			getRobot().setSpeed(robot.getSpeed());
-			getRobot().setSrc(robot.getSrc());
-			getRobot().setValue(robot.getValue());*/
-			
-		/*}*/
-		
 	}
-	
 
 }
