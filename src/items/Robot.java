@@ -1,6 +1,7 @@
 package items;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -19,6 +20,9 @@ public class Robot {
 	private double value;
 	private int src, dest , speed, id;
 	Queue<node_data> path_to_target;
+	private PriorityQueue<Fruit> my_targets;
+	private boolean busy;
+	
 	
 	public Robot(int id, double value, int src, int dest, int speed, Point3D pos) {
 		this.id = id;
@@ -27,6 +31,7 @@ public class Robot {
 		this.src = src;
 		this.dest = dest;
 		this.path_to_target = new LinkedList<node_data>();
+		this.busy = false;
 	}
 	
 	public Robot() {
@@ -84,6 +89,15 @@ public class Robot {
 	}
 	
 	public Queue<node_data> getPath_to_target() {return path_to_target;}
+
+
+	public boolean isBusy() {
+		return busy;
+	}
+	
+	public void setIsBusy(boolean b) {
+		this.busy = b;
+	}
 	
 
 }

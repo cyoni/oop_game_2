@@ -110,8 +110,6 @@ public class FW implements Serializable{
 			tmpPath.add(shortestPath.get(i));
 		
 		if (tmpPath.size() > 1) {
-	
-		
 			int last = tmpPath.get(0).getKey();
 			for (int i = 1; i < tmpPath.size(); i++) {
 				int current = tmpPath.get(i).getKey();
@@ -121,9 +119,6 @@ public class FW implements Serializable{
 				last = current;
 			}
 		}
-			
-		
-		
 		return tmpPath; 
 	}
 

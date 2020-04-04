@@ -10,13 +10,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import dataStructure.DGraph;
+import dataStructure.Node_metadata;
 import dataStructure.edge_data;
 import dataStructure.edge_metadata;
 import dataStructure.game_metadata;
 import dataStructure.graph;
 import dataStructure.node_data;
-import gui.Todelete;
-import gui.Node_metadata;
 import items.Fruit;
 import items.Robot;
 import utils.Point3D;

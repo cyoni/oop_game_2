@@ -29,19 +29,18 @@ import items.Robot;
 import oop_dataStructure.OOP_DGraph;
 import oop_dataStructure.oop_edge_data;
 import oop_dataStructure.oop_graph;
-import threads.Plan_move_thread;
-import threads.Refresh_screen_thread;
+import threads.Refresh_thread;
+import threads.manageRobot;
 import utils.Point3D;
 import utils.StdDraw;
 import utils.User_Dialog;
 
 
 public class Game_board{
-	 int scenario_num;
-	//static MyGameGUI myGameGui;
-	 game_metadata game_mt; // contains converted graph, list of fruits, robots
+	 private int scenario_num;
+	 private game_metadata game_mt; // contains converted graph, list of fruits, robots
 	 private game_service game;
-	 OOP_DGraph game_graph;
+	 private OOP_DGraph game_graph;
 	 private static Point3D measures;
 	 
 	public Game_board(int stage) {
@@ -60,16 +59,15 @@ public class Game_board{
 			line = new JSONObject(info);
 			JSONObject ttt = line.getJSONObject("GameServer");
 			int rs = ttt.getInt("robots");
-			System.out.println(info);
-			System.out.println(graph_json);
-			// the list of fruits should be considered in your solution
-			Iterator<String> f_iter = game.getFruits().iterator();
-			System.out.println("fruits " + f_iter.toString());
-			//while(f_iter.hasNext()) {System.out.println(f_iter.next());}	
+		//	System.out.println(info);
+			//System.out.println(graph_json);
+
+		//	Iterator<String> f_iter = game.getFruits().iterator();
+			//System.out.println("fruits " + f_iter.toString());
 			
-			int src_node = 20;  // arbitrary node, you should start at one of the fruits
+			int src_node = 0;  // arbitrary node, you should start at one of the fruits
 			
-			if (scenario_num == 23) {
+			if (scenario_num == 23) { // TODO
 				game.addRobot(5);
 				game.addRobot(15);
 				game.addRobot(25);
@@ -77,51 +75,41 @@ public class Game_board{
 			else			
 			for(int a = 0; a < rs;a++) {
 				game.addRobot(src_node+a);
-				
 			}	
 			game_mt = new game_metadata(measures, game);			
 		}
 		catch (JSONException e) {e.printStackTrace();}
 		game.startGame();
 
-
-		manualVersion();
-		
-		
+		automaticVersion();
 	}
 	
 	
-	public void drawObjects() {
-		
-		//drawFruits();
-	}
 
-
-
-	
-	public void manualVersion() {
-		
-	
-		Refresh_screen_thread thread = new Refresh_screen_thread(game_mt, measures); // this thread updates the screen and the location of the robots.
-		Plan_move_thread mangement_thread = new Plan_move_thread(game_mt);
-		
-		thread.start();
-		mangement_thread.start();
-		
-	}
-
-	
 	public void automaticVersion() {
+		Refresh_thread refreshScreen_thread = new Refresh_thread(game_mt, measures); // this thread updates the screen and the location of the robots.
+	//	Plan_move_thread mangement_thread = new Plan_move_thread(game_mt);
 		
+
+		int robots_size = game_mt.service.getRobots().size();
+		List<manageRobot> threadRobots = new ArrayList<>();
+		for (int i=0; i< robots_size; i++) {
+			threadRobots.add(new manageRobot(game_mt, game_mt.getRobots().get(i)));
+			System.out.println("Thread #" + threadRobots.get(i).getId() + " joined" );
+		}
+		
+		for (int i = 0; i < threadRobots.size(); i++)  threadRobots.get(i).start();
+		refreshScreen_thread.start();
+
 		
 	}
-	/** 
+/*	*//** 
 	 * Moves each of the robots along the edge, 
 	 * in case the robot is on a node the next destination (next edge) is chosen (randomly).
 	 * @param game
 	 * @param gg
 	 * @param log
-	 */
+	 *//*
 	private static void moveRobots(game_service game, oop_graph game_graph) {
 		List<String> log = game.move();
 		
@@ -153,14 +141,14 @@ public class Game_board{
 				catch (JSONException e) {e.printStackTrace();}
 			}
 		}
-	}
+	}*/
 	
-	/**
+/*	*//**
 	 * a very simple random walk implementation!
 	 * @param g
 	 * @param src
 	 * @return
-	 */
+	 *//*
 	private static int nextNode(oop_graph g, int src) {
 		int ans = -1; 
 		Collection<oop_edge_data> ee = g.getE(src);
@@ -173,15 +161,13 @@ public class Game_board{
 		while(i<r) {itr.next();i++;}
 		ans = itr.next().getDest();
 		return ans;
-	}
+	}*/
 
-	
-	
 	public void start() {
 		start_game();
 	}
 	
-	public Point3D  getMeasures() {
+	public Point3D getMeasures() {
 		return measures;
 	}
 	

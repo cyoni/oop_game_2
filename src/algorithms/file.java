@@ -16,12 +16,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import dataStructure.DGraph;
+import dataStructure.Node_metadata;
 import dataStructure.edge_data;
 import dataStructure.edge_metadata;
 import dataStructure.game_metadata;
 import dataStructure.graph;
 import dataStructure.node_data;
-import gui.Node_metadata;
 import utils.Point3D;
 
 
@@ -31,7 +31,39 @@ import utils.Point3D;
 	* @author Yoni
 	*/
 
+
 public class file implements file_interface{
+
+		@Override
+		public void loadFile() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public graph processFile() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void saveFile(String l) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setLocation(String l) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String getFilePath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	/*
 	private JFrame f;
 	private String file_location;
 
@@ -58,63 +90,8 @@ public class file implements file_interface{
 
 	@Override
 	public graph processFile() {
-	if (getFilePath().isEmpty()) return null;
-		
-	//game_metadata gmt = new game_metadata();
-	List<edge_data> Edges = new ArrayList<>();
-	List<node_data> Nodes = new ArrayList<>();
 	
-	String data = "";
-	try {
-		data = new String(Files.readAllBytes(Paths.get(getFilePath())));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	System.out.println(data);
-	
-		
-	try {
-			JSONObject obj = new JSONObject(data);
-			JSONArray arr = obj.getJSONArray("Edges");
-			for (int i = 0; i < arr.length(); i++) // get data of Edges
-				{
-					int src = arr.getJSONObject(i).getInt(("src"));
-					double w = arr.getJSONObject(i).getDouble(("w"));
-					int dest = arr.getJSONObject(i).getInt(("dest"));
-					
-					Edges.add(new edge_metadata(src, dest, w));
-				}
-			arr = obj.getJSONArray("Nodes"); // get data of Nodes
-			for (int i = 0; i < arr.length(); i++) // get data of Edges
-			{
-				String pos = arr.getJSONObject(i).getString(("pos"));
-				int id = arr.getJSONObject(i).getInt(("id"));	
-				
-				String point[] = pos.split(",");
-				double x = Double.parseDouble(point[0]);
-				double y = Double.parseDouble(point[1]);
-				double z = Double.parseDouble(point[2]);
-				
-
-				Nodes.add(new Node_metadata(id, new converter(f).coordsToPixel(y, x)));
-			}
-		}
-		
-		 catch (JSONException e) {
-				e.printStackTrace();
-			}
-	
-			graph g = new DGraph();
-			
-			for (int i = 0; i < Nodes.size(); i++) {
-				g.addNode(Nodes.get(i));
-			}
-			for (int i = 0; i < Edges.size(); i++) {
-				g.connect(Edges.get(i).getSrc(), Edges.get(i).getDest(), Edges.get(i).getWeight());
-			}
-	
-	//	return new game_metadata(Edges, Nodes, null);
-			return g;
+	 return g;
 	}
 
 	@Override
@@ -149,5 +126,5 @@ public class file implements file_interface{
 	}
 
 
-		
+		*/
 }

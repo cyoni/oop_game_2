@@ -18,10 +18,13 @@ import java.util.Queue;
 import java.util.Stack;
 
 import dataStructure.DGraph;
+import dataStructure.Node_metadata;
 import dataStructure.edge_data;
+import dataStructure.game_metadata;
 import dataStructure.graph;
 import dataStructure.node_data;
-import gui.Node_metadata;
+import items.Fruit;
+import items.Robot;
 import utils.Point3D;
 /**
  * This empty class represents the set of graph-theory algorithms
@@ -38,14 +41,15 @@ public class Graph_Algo implements graph_algorithms , Serializable{
 	private static final long serialVersionUID = 6772723883559432038L;
 	
 	
-	private static graph g;
+	private graph g;
 	private FW fw;
 	
-	@Override
-	public void init(graph g) {
-		Graph_Algo.g = g;
+	public Graph_Algo(graph graph) {
+		this.g = graph;
 		fw = new FW(g);
-	}
+		}
+
+
 
 	@Override
 	public void init(String file_name) {
@@ -113,7 +117,7 @@ public class Graph_Algo implements graph_algorithms , Serializable{
 		for (int i = 0; i < list.size(); i++) {
 			q.add(list.get(i));
 		}
-		
+		System.out.println("size: " + q.size());
 		
 		return q;
 	}
@@ -142,4 +146,23 @@ public class Graph_Algo implements graph_algorithms , Serializable{
 		}
 		return null;
 	}
+	
+	/**
+	 * This method checks whether an edge which the robot is going towards to is opposite.
+	 * @param current_fruit
+	 * @param robot
+	 * @return
+	 */
+		public boolean isEdgeOpposite(Fruit current_fruit, Robot robot) {
+			boolean	closest_fruit_isEdgeOpposite = false;
+			if (shortestPathDist(robot.getSrc(), 
+					g.getNode(current_fruit.getEdge().getDest()).getKey()) < 
+						shortestPathDist(robot.getSrc(), 
+							g.getNode(current_fruit.getEdge().getSrc()).getKey())) {
+							closest_fruit_isEdgeOpposite = true;
+						}
+			return closest_fruit_isEdgeOpposite;
+		}
+	
+	
 }

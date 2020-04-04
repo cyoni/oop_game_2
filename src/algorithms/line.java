@@ -64,6 +64,12 @@ public class line {
 		double x0 = p.x(), y0 = p.y();
 		double x1 = p1.x(), y1 = p1.y();
 		double x2 = p2.x();
+			// check if the given point is between the line:
+			double x_max = Math.max(p1.x(), p2.x());
+			double x_min = Math.min(p1.x(), p2.x());
+			
+			if (!(x_max > x0 && x_min < x0) || (x0 > x_max)) { return new double[]{9999, 9999, 9999}; }
+			
 			if (x1 == 0 && x2 == 0) {throw new IllegalArgumentException("Argument 'divisor' is 0");}
 		double m = (p2.y()-p1.y())/(p2.x()-p1.x());
 		double a = m;

@@ -1,9 +1,4 @@
-/gui/
-/algorithms/
-/dataStructure/
-/gameClient/
-/utils/
 /threads/
-/items/
-/c1.png
-/tests/
+/gui/
+/dataStructure/
+/algorithms/

@@ -33,17 +33,29 @@ public class Fruit {
 	
 	private void findEdge() {
 		List<edge_data> edges = g.getEdges();
+		double min_distance = 9999;
 		
 		for (edge_data current_edge : edges) {
+		//	System.out.println(g.getNode(26).getLocation().x() + "," + g.getNode(26).getLocation().y()  + " (26)");
+		//	System.out.println(g.getNode(30).getLocation().x() + "," + g.getNode(30).getLocation().y()  + " (30)");
 			Point3D p1 = g.getNode(current_edge.getSrc()).getLocation();
 			Point3D p2 = g.getNode(current_edge.getDest()).getLocation();
 			Point3D point_to_check = this.pos;
+			 
+			// print to file:
+		//	if (this.pos.x() == 669.0 && pos.y() == 167.0)
+		//		System.out.println(line.distanceBetweenLineAnd2Points(p1, p2, point_to_check)[0] + " ("+ p1.x() + "," + p1.y() + "  " + p2.x() +"," + p2.y());
 			
-			//System.out.println(line.distanceBetweenLineAnd2Points(p1, p2, point_to_check)[0] + " ("+ p1.x() + "," + p1.y() + "  " + p2.x() +"," + p2.y());
-			if (line.distanceBetweenLineAnd2Points(p1, p2, point_to_check)[0] < 2) {
-				edge_of_fruit = current_edge;
-				break;
-				}
+			double distance =  line.distanceBetweenLineAnd2Points(p1, p2, point_to_check)[0];
+			if (min_distance > distance) {
+				min_distance = distance;
+				edge_of_fruit = current_edge; 
+			}
+			
+			//if (line.distanceBetweenLineAnd2Points(p1, p2, point_to_check)[0] < 2) {
+			//	edge_of_fruit = current_edge;
+			//	break;
+			//	}
 		}
 		
 		if (edge_of_fruit == null)

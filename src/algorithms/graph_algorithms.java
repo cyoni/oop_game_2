@@ -16,15 +16,14 @@ package algorithms;
 import java.util.List;
 import java.util.Queue;
 
+import dataStructure.game_metadata;
 import dataStructure.graph;
 import dataStructure.node_data;
+import items.Fruit;
+import items.Robot;
 
 public interface graph_algorithms {
-	/**
-	 * Init this set of algorithms on the parameter - graph.
-	 * @param g
-	 */
-	public void init(graph g);
+
 	/** 
 	 * Compute a deep copy of this graph.
 	 * @return
@@ -74,5 +73,6 @@ public interface graph_algorithms {
 	public List<node_data> TSP(List<Integer> targets);
 	
 	
+	 public boolean isEdgeOpposite(Fruit current_fruit, Robot robot);
 	
 }

@@ -90,7 +90,6 @@ public class Game_controller {
 		
 		game_mt.available_fruits.remove(closest_fruit); // make the fruit now available to others robots
 		robot.setPath_to_target(l); // assign the new path to the robot.
-		robot.setTarget(closest_fruit);
 		robot.setIsBusy(true); // now I am busy
 
 		
